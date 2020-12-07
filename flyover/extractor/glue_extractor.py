@@ -2,7 +2,7 @@
 
 import boto3
 from pyhocon import ConfigTree
-from typing import Iterator, Union, Dict, Any
+from typing import Iterator, Union, Dict, Any, List
 from databuilder.extractor.base_extractor import Extractor
 from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
@@ -57,6 +57,10 @@ class GlueExtractor(Extractor):
             )
 
     def _get_raw_extract_iter(self) -> Iterator[Dict[str, Any]]:
+        tables = self._search_tables()
+        return iter(tables)
+
+    def _search_tables(self) -> List[Dict[str, Any]]:
         tables = []
         kwargs = {}
         data = self._glue.search_tables()
@@ -68,4 +72,4 @@ class GlueExtractor(Extractor):
             data = self._glue.search_tables(**kwargs)
             tables += data["TableList"]
 
-        return iter(tables)
+        return tables

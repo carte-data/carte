@@ -10,7 +10,7 @@ requirements = [
 ]
 
 setup(
-    name='carte-flyover',
+    name='flyover',
     version=__version__,
     description='Carte Flyover – extract metadata from data storage into files',
     url='https://github.com/CarteData/carte-flyover',
