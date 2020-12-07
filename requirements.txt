@@ -1,0 +1,5 @@
+amundsen-databuilder==4.0.3
+boto3==1.16.25
+botocore==1.19.25
+pyhocon==0.3.57
+ruamel.yaml==0.16.12
