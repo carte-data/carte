@@ -5,10 +5,10 @@ from databuilder.extractor.glue_extractor import GlueExtractor
 from databuilder.job.job import DefaultJob
 from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
-from extractor.extractor.glue_extractor import GlueExtractor as CarteGlueExtractor
 from pyhocon import ConfigFactory
 
-from extractor.loader.carte_loader import CarteLoader
+from flyover.loader.carte_loader import CarteLoader
+from flyover.extractor.glue_extractor import GlueExtractor as CarteGlueExtractor
 
 def run_csv_job():
     # csv_extractor = CsvExtractor()

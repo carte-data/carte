@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import Any, List
-from ruamel.yaml import YAML, yaml_object
 from databuilder.models.table_metadata import TableMetadata as DatabuilderTableMetadata
 from databuilder.models.table_metadata import (
     ColumnMetadata as DatabuilderColumnMetadata,
@@ -8,8 +7,6 @@ from databuilder.models.table_metadata import (
 from databuilder.models.table_metadata import (
     DescriptionMetadata as DatabuilderDescription,
 )
-
-yaml = YAML()
 
 
 def get_description_text(description: DatabuilderDescription):

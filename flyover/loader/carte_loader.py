@@ -6,11 +6,11 @@ from typing import Union
 from databuilder.loader.base_loader import Loader
 from databuilder.models.table_metadata import TableMetadata as DatabuilderTableMetadata
 from pyhocon import ConfigTree
-import extractor.utils.frontmatter as frontmatter
 
 
-from extractor.model.job_metadata import JobMetadata
-from extractor.model.carte_table_model import TableMetadata
+from flyover.model.job_metadata import JobMetadata
+from flyover.model.carte_table_model import TableMetadata
+import flyover.utils.frontmatter as frontmatter
 
 OUTPUT_FILE_PATH = "content/tables"
 FRONTMATTER_SEPARATOR = "---"

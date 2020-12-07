@@ -4,7 +4,7 @@ import boto3
 from pyhocon import ConfigTree
 from typing import Iterator, Union, Dict, Any
 from databuilder.extractor.base_extractor import Extractor
-from extractor.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
 
 class GlueExtractor(Extractor):
