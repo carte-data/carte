@@ -1,5 +1,9 @@
 ![Carte logo](https://cartedata.com/ligature.png "Carte logo")
 # Carte Flyover
+[![PyPI version](https://badge.fury.io/py/carte-flyover.svg)](https://badge.fury.io/py/carte-flyover)
+[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/carte-flyover.svg)](https://pypi.org/project/carte-flyover/)
+
 
 Flyover is a Python library for extracting metadata from your data sources and generating structured Markdown files from it. It's a companion library to Carte, a lightweight data catalog for fast moving data teams. Flyover currently supports the AWS Glue catalog but more sources are coming.
 
