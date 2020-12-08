@@ -1,4 +1,4 @@
-![Carte logo](https://cartedata.com/logo.png "Carte logo")
+![Carte logo](https://cartedata.com/ligature.png "Carte logo")
 # Carte Flyover
 [![PyPI version](https://badge.fury.io/py/carte-flyover.svg)](https://badge.fury.io/py/carte-flyover)
 [![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
