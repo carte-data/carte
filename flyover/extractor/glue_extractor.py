@@ -51,7 +51,7 @@ class GlueExtractor(Extractor):
                 connection="glue",
                 database=row["DatabaseName"],
                 description=None,
-                location=row["StorageDescriptor"].get("Location", ""),
+                location=row["StorageDescriptor"].get("Location", None),
                 columns=columns,
                 table_type=table_type,
             )

@@ -92,7 +92,7 @@ class TableMetadata:
 
         return cls(
             name=table.name,
-            location=None,
+            location=table._get_table_key(),
             database=table.schema,
             connection=table.database,
             description=(
