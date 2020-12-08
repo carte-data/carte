@@ -60,6 +60,12 @@ class ColumnMetadata:
             "description": self.description,
         }
 
+    def __repr__(self) -> str:
+        return "CarteTableMetadata({!r}, {!r}, {!r})".format(
+            self.name,
+            self.column_type,
+            self.description,
+        )
 
 class TableMetadata:
     def __init__(
@@ -171,3 +177,14 @@ class TableMetadata:
 
     def get_file_name(self):
         return f"{self.connection}/{self.database}/{self.name}"
+
+    def __repr__(self) -> str:
+        return "CarteTableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})".format(
+            self.name,
+            self.database,
+            self.connection,
+            self.description,
+            self.location,
+            self.columns,
+            self.table_type,
+        )
