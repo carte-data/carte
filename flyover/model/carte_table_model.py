@@ -114,7 +114,7 @@ class TableMetadata:
         return cls(
             name=metadata.get("title"),
             database=metadata.get("database", None),
-            description=metadata.get("description", None),
+            description=content,
             location=metadata.get("location", None),
             connection=metadata.get("connection", None),
             columns=columns,

@@ -12,7 +12,8 @@ from flyover.model.job_metadata import JobMetadata
 from flyover.model.carte_table_model import TableMetadata
 import flyover.utils.frontmatter as frontmatter
 
-OUTPUT_FILE_PATH = "content/tables"
+TABLES_OUTPUT_PATH = "content/tables"
+JOBS_OUTPUT_PATH = "content/jobs"
 FRONTMATTER_SEPARATOR = "---"
 
 
@@ -20,9 +21,14 @@ class CarteLoader(Loader):
     def init(self, conf: ConfigTree):
         self.conf = conf
         self.base_directory = self.conf.get_string("base_directory", ".")
-        self.file_path = self.conf.get_string("output_file_path", OUTPUT_FILE_PATH)
+        self.tables_path = self.conf.get_string(
+            "tables_output_path", TABLES_OUTPUT_PATH
+        )
+        self.jobs_path = self.conf.get_string("jobs_output_path", JOBS_OUTPUT_PATH)
 
-    def load(self, record: Union[None, JobMetadata, DatabuilderTableMetadata]):
+    def load(
+        self, record: Union[None, JobMetadata, DatabuilderTableMetadata, TableMetadata]
+    ):
         if not record:
             return
 
@@ -57,7 +63,7 @@ class CarteLoader(Loader):
         frontmatter.dump(full_file_name, *extractor_metadata.to_frontmatter())
 
     def get_table_file_name(self, record: TableMetadata):
-        return f"{self.base_directory}/{self.file_path}/{record.get_file_name()}.md"
+        return os.path.join(self.base_directory, self.tables_path, f"{record.get_file_name()}.md")
 
     def load_job(self, record: JobMetadata):
         pass
