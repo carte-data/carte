@@ -10,7 +10,7 @@ from databuilder.models.table_metadata import (
 
 
 def get_description_text(description: DatabuilderDescription):
-    return description._source
+    return description._text
 
 
 class ColumnType(Enum):
@@ -49,8 +49,8 @@ class ColumnMetadata:
     def from_frontmatter(cls, meta_dict):
         return cls(
             name=meta_dict["name"],
-            column_type=meta_dict["type"],
-            description=meta_dict["description"],
+           column_type=meta_dict.get("type"),
+            description=meta_dict.get("description"),
         )
 
     def to_frontmatter(self):
@@ -66,6 +66,7 @@ class ColumnMetadata:
             self.column_type,
             self.description,
         )
+
 
 class TableMetadata:
     def __init__(
@@ -112,7 +113,7 @@ class TableMetadata:
         ]
 
         return cls(
-            name=metadata.get("title"),
+            name=metadata["title"],
             database=metadata.get("database", None),
             description=content,
             location=metadata.get("location", None),

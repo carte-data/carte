@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest.mock import patch, create_autospec, mock_open
+from unittest.mock import patch, mock_open
 import pytest
 
 import flyover.utils.frontmatter as frontmatter
