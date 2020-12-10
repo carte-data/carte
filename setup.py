@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 requirements = [
     "boto3>=1.16.25",
@@ -23,5 +23,6 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 )
