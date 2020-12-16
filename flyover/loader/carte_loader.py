@@ -69,4 +69,4 @@ class CarteLoader(Loader):
         pass
 
     def get_scope(self) -> str:
-        return "carte.loader"
+        return "loader.carte"

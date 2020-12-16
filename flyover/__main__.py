@@ -22,7 +22,7 @@ parser.add_argument(
 parser.add_argument(
     "--output",
     "-o",
-    default="data/tables",
+    default="data/datasets",
     help="The output directory to place markdown files in.",
 )
 
@@ -33,7 +33,7 @@ def run_csv_job(config_file, output_dir):
 
     job_config = ConfigFactory.from_dict(
         {
-            "loader.carte.output_file_path": output_dir,
+            "loader.carte.tables_output_path": output_dir,
         }
     )
 
