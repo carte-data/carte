@@ -10,7 +10,6 @@ from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, Table
 class GlueExtractor(Extractor):
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
-        self._cluster = conf.get_string
         self._glue = boto3.client("glue")
         self._extract_iter = None
 

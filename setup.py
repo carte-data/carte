@@ -17,6 +17,10 @@ setup(
     maintainer='Balint Haller',
     maintainer_email='balint@haller.io',
     packages=find_packages(exclude=['tests*']),
+    entry_points='''
+        [console_scripts]
+        flyover=flyover.__main__:main
+    ''',
     dependency_links=[],
     install_requires=requirements,
     python_requires='>=3.6',

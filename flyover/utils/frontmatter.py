@@ -1,5 +1,5 @@
 import io
-from ruamel.yaml import YAML, yaml_object
+from ruamel.yaml import YAML
 
 yaml = YAML()
 
