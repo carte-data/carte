@@ -8,6 +8,10 @@ from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, Table
 
 
 class GlueExtractor(Extractor):
+    def __init__(self, connection_name: str):
+        super().__init__()
+        self.connection_name = connection_name
+
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         self._glue = boto3.client("glue")
@@ -47,7 +51,7 @@ class GlueExtractor(Extractor):
 
             yield TableMetadata(
                 name=row["Name"],
-                connection="glue",
+                connection=self.connection_name,
                 database=row["DatabaseName"],
                 description=None,
                 location=row["StorageDescriptor"].get("Location", None),

@@ -8,7 +8,7 @@ CONNECTION_FACTORIES = {"glue": create_glue_connection}
 
 
 def create_glue_connection(conn_dict):
-    return GlueExtractor()
+    return GlueExtractor(conn_dict.get("name", "glue"))
 
 
 def parse_config(filename):
