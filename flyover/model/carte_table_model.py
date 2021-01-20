@@ -94,7 +94,7 @@ class TableMetadata:
         return cls(
             name=table.name,
             location=table._get_table_key(),
-            database=table.schema,
+            database=table.cluster,
             connection=table.database,
             description=(
                 get_description_text(table.description)

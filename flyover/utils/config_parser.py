@@ -1,6 +1,7 @@
 import io
 from ruamel.yaml import YAML
 from flyover.extractor.glue_extractor import GlueExtractor
+from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
 
 yaml = YAML()
 
@@ -9,7 +10,14 @@ def create_glue_connection(conn_dict):
     return GlueExtractor(conn_dict.get("name", "glue"))
 
 
-CONNECTION_FACTORIES = {"glue": create_glue_connection}
+def create_postgres_connection(conn_dict):
+    return PostgresMetadataExtractor()
+
+
+CONNECTION_FACTORIES = {
+    "glue": create_glue_connection,
+    "postgresql": create_postgres_connection,
+}
 
 
 def parse_config(filename):
@@ -24,7 +32,7 @@ def parse_config(filename):
         for conn_dict in connections
     ]
 
-    return extractors
+    return extractors, connections
 
 
 def _read_file(filename: str):
