@@ -55,10 +55,13 @@ class CarteLoader(Loader):
 
         if os.path.isfile(full_file_name):
             metadata, content = frontmatter.parse(full_file_name)
-            frontmatter_metadata = TableMetadata.from_frontmatter(metadata, content)
-            extractor_metadata = extractor_metadata.merge_with_existing(
-                frontmatter_metadata
-            )
+            try:
+                frontmatter_metadata = TableMetadata.from_frontmatter(metadata, content)
+                extractor_metadata = extractor_metadata.merge_with_existing(
+                    frontmatter_metadata
+                )
+            except ValueError as e:
+                raise ValueError(f"{e}\nFile name: {full_file_name}")
 
         frontmatter.dump(full_file_name, *extractor_metadata.to_frontmatter())
 

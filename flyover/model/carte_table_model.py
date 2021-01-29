@@ -112,15 +112,18 @@ class TableMetadata:
             for col_dict in metadata.get("columns", [])
         ]
 
-        return cls(
-            name=metadata["title"],
-            database=metadata.get("database", None),
-            description=content,
-            location=metadata.get("location", None),
-            connection=metadata.get("connection", None),
-            columns=columns,
-            table_type=TableType(metadata.get("table_type", "table")),
-        )
+        try:
+            return cls(
+                name=metadata["title"],
+                database=metadata.get("database", None),
+                description=content,
+                location=metadata.get("location", None),
+                connection=metadata.get("connection", None),
+                columns=columns,
+                table_type=TableType(metadata.get("table_type", "table")),
+            )
+        except KeyError as e:
+            raise ValueError(f"Key not found in frontmatter: {e}. Metadata: {metadata}")
 
     def to_frontmatter(self):
         metadata = {
