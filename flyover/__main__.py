@@ -29,20 +29,11 @@ parser.add_argument(
 
 def run_csv_job(config_file, output_dir):
     carte_loader = CarteLoader()
-    extractors, connections = parse_config(config_file)
-
-    extractor_config = {}
-
-    for extractor, connection in zip(extractors, connections):
-        scope = extractor.get_scope()
-        config = connection.get("config", {})
-        for conf_key, conf_value in config.items():
-            extractor_config[f"{scope}.{conf_key}"] = conf_value
+    extractors, config = parse_config(config_file)
 
     job_config = ConfigFactory.from_dict(
         {"loader.carte.tables_output_path": output_dir,
-         # f'extractor.postgres_metadata.where_clause_suffix: '
-        **extractor_config}
+         **config}
     )
 
     for extractor in extractors:

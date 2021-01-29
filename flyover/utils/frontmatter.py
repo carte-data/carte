@@ -12,11 +12,11 @@ def parse(filename):
     metadata = {}
     content = ""
 
-    if len(data) >= 1 and data[0] != "":
-        metadata = yaml.load(data[0])
+    if len(data) >= 2 and data[1] != "":
+        metadata = yaml.load(data[1])
 
     if len(data) >= 2:
-        content = data[1]
+        content = data[2]
 
     return metadata, content
 
