@@ -2,6 +2,7 @@ import io
 from ruamel.yaml import YAML
 
 yaml = YAML()
+yaml.indent(mapping=2, sequence=4, offset=2)
 
 FRONTMATTER_SEPARATOR = "---\n"
 
