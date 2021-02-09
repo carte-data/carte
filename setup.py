@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 requirements = [
     "boto3>=1.16.25",
