@@ -8,9 +8,9 @@ from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 from pyhocon import ConfigFactory
 
-from flyover.loader.carte_loader import CarteLoader
+from carte.loader.carte_loader import CarteLoader
 
-from flyover.utils.config_parser import parse_config
+from carte.utils.config_parser import parse_config
 
 parser = argparse.ArgumentParser(description="Run metadata extraction for Carte")
 parser.add_argument(

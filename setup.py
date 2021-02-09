@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 requirements = [
     "boto3>=1.16.25",
@@ -10,16 +10,16 @@ requirements = [
 ]
 
 setup(
-    name='flyover',
+    name='carte',
     version=__version__,
-    description='Carte Flyover – extract metadata from data storage into files',
-    url='https://github.com/CarteData/carte-flyover',
+    description='Carte – extract metadata from data storage into files',
+    url='https://github.com/carte-data/carte',
     maintainer='Balint Haller',
-    maintainer_email='balint@haller.io',
+    maintainer_email='balint@hey.com',
     packages=find_packages(exclude=['tests*']),
     entry_points='''
         [console_scripts]
-        flyover=flyover.__main__:main
+        carte=carte.__main__:main
     ''',
     dependency_links=[],
     install_requires=requirements,

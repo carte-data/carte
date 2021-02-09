@@ -8,9 +8,9 @@ from databuilder.models.table_metadata import TableMetadata as DatabuilderTableM
 from pyhocon import ConfigTree
 
 
-from flyover.model.job_metadata import JobMetadata
-from flyover.model.carte_table_model import TableMetadata
-import flyover.utils.frontmatter as frontmatter
+from carte.model.job_metadata import JobMetadata
+from carte.model.carte_table_model import TableMetadata
+import carte.utils.frontmatter as frontmatter
 
 TABLES_OUTPUT_PATH = "content/tables"
 JOBS_OUTPUT_PATH = "content/jobs"

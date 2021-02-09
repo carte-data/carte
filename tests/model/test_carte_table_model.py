@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 from databuilder.models.table_metadata import ColumnMetadata as DatabuilderColumn
 from databuilder.models.table_metadata import (
     DescriptionMetadata as DatabuilderDescription,

@@ -3,11 +3,11 @@ import unittest
 from unittest.mock import patch
 from pyhocon import ConfigFactory
 
-from flyover.extractor.glue_extractor import GlueExtractor
-from flyover.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte.extractor.glue_extractor import GlueExtractor
+from carte.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
 
-@patch("flyover.extractor.glue_extractor.boto3.client", lambda x: None)
+@patch("carte.extractor.glue_extractor.boto3.client", lambda x: None)
 class TestGlueExtractor(unittest.TestCase):
     def setUp(self) -> None:
         self.conf = ConfigFactory.from_dict({})
