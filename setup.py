@@ -10,7 +10,7 @@ requirements = [
 ]
 
 setup(
-    name='carte',
+    name='carte-cli',
     version=__version__,
     description='Carte – extract metadata from data storage into files',
     url='https://github.com/carte-data/carte',
