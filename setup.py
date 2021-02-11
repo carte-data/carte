@@ -7,6 +7,7 @@ requirements = [
     "pyhocon>=0.3.57",
     "amundsen-databuilder>=4.0.3",
     "ruamel.yaml>=0.16.12",
+    "sqlalchemy>=1.3.23"
 ]
 
 setup(
