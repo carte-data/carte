@@ -27,7 +27,7 @@ parser.add_argument(
 )
 
 
-def run_csv_job(config_file, output_dir):
+def run_extraction(config_file, output_dir):
     carte_loader = CarteLoader()
     extractors, config = parse_config(config_file)
 
@@ -44,7 +44,7 @@ def run_csv_job(config_file, output_dir):
 
 def main():
     args = parser.parse_args()
-    run_csv_job(args.config, args.output)
+    run_extraction(args.config, args.output)
 
 
 if __name__ == "__main__":
