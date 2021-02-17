@@ -9,9 +9,8 @@ from databuilder.task.task import DefaultTask
 from databuilder.transformer.base_transformer import NoopTransformer
 from pyhocon import ConfigFactory
 
-from carte.loader.carte_loader import CarteLoader
-
-from carte.utils.config_parser import parse_config
+from carte_cli.loader.carte_loader import CarteLoader
+from carte_cli.utils.config_parser import parse_config
 
 app = typer.Typer()
 
@@ -34,7 +33,7 @@ def run_extraction(
         {"loader.carte.tables_output_path": output_dir, **config}
     )
 
-    print("Running extraction...")
+    typer.echo("Running extraction...")
 
     with click_spinner.spinner():
 
@@ -43,7 +42,11 @@ def run_extraction(
 
             DefaultJob(conf=job_config, task=task).launch()
 
-    print("Done!")
+    typer.echo("Done!")
+
+@app.command("new")
+def new_frontend(name: str = typer.Argument(..., help="The name of the front end folder to create")):
+    pass
 
 
 if __name__ == "__main__":

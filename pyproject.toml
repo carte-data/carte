@@ -9,6 +9,9 @@ homepage = "https://cartedata.com"
 repository = "https://github.com/carte-data/carte"
 documentation = "https://docs.cartedata.com"
 
+[tool.poetry.scripts]
+carte = "carte_cli.main:app"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 amundsen-databuilder = "^4.1.0"
@@ -16,9 +19,8 @@ amundsen-databuilder = "^4.1.0"
 boto3 = "^1.17.2"
 typer = "^0.3.2"
 click-spinner = "^0.1.10"
-
-[tool.poetry.scripts]
-carte = "carte.main:app"
+SQLAlchemy = "^1.3.23"
+psycopg2 = "^2.8.6"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,6 +1,6 @@
 import io
 from ruamel.yaml import YAML
-from carte.extractor.glue_extractor import GlueExtractor
+from carte_cli.extractor.glue_extractor import GlueExtractor
 from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
 
 yaml = YAML()
