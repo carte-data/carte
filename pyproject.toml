@@ -1,9 +1,13 @@
 [tool.poetry]
-name = "carte"
+name = "carte-cli"
 version = "0.1.8"
 description = "A static site generator for data catalogs"
 authors = ["Balint Haller <balint@hey.com>"]
 license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://cartedata.com"
+repository = "https://github.com/carte-data/carte"
+documentation = "https://docs.cartedata.com"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -11,8 +15,10 @@ amundsen-databuilder = "^4.1.0"
 "ruamel.yaml" = "^0.16.12"
 boto3 = "^1.17.2"
 typer = "^0.3.2"
+click-spinner = "^0.1.10"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.scripts]
+carte = "carte.main:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
