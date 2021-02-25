@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "carte-cli"
-version = "0.2.0"
+version = "0.2.1"
 description = "A static site generator for data catalogs"
 authors = ["Balint Haller <balint@hey.com>"]
 license = "Apache-2.0"
@@ -13,7 +13,7 @@ documentation = "https://docs.cartedata.com"
 carte = "carte_cli.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 amundsen-databuilder = "^4.1.0"
 "ruamel.yaml" = "^0.16.12"
 boto3 = "^1.17.2"
