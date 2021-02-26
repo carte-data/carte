@@ -6,8 +6,8 @@ import pytest
 from pyhocon import ConfigFactory
 from typing import Dict, Iterable, Any, Callable  # noqa: F401
 
-from carte.loader.carte_loader import CarteLoader
-from carte.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte_cli.loader.carte_loader import CarteLoader
+from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
 
 @pytest.fixture
@@ -17,8 +17,8 @@ def patched_config():
     )
 
 
-@patch("carte.loader.carte_loader.frontmatter")
-@patch("carte.loader.carte_loader.os")
+@patch("carte_cli.loader.carte_loader.frontmatter")
+@patch("carte_cli.loader.carte_loader.os")
 def test_load_carte_metadata(mock_os, mock_frontmatter, patched_config):
     test_record = TableMetadata(
         name="test_name",
@@ -48,8 +48,8 @@ def test_load_carte_metadata(mock_os, mock_frontmatter, patched_config):
     )
 
 
-@patch("carte.loader.carte_loader.frontmatter")
-@patch("carte.loader.carte_loader.os")
+@patch("carte_cli.loader.carte_loader.frontmatter")
+@patch("carte_cli.loader.carte_loader.os")
 def test_load_carte_metadata_with_merge(mock_os, mock_frontmatter, patched_config):
     test_record = TableMetadata(
         name="test_name",

@@ -16,7 +16,7 @@ def parse(filename):
     if len(data) >= 2 and data[1] != "":
         metadata = yaml.load(data[1])
 
-    if len(data) >= 2:
+    if len(data) >= 3:
         content = data[2]
 
     return metadata, content

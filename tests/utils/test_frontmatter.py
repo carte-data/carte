@@ -3,22 +3,22 @@ import unittest
 from unittest.mock import patch, mock_open
 import pytest
 
-import carte.utils.frontmatter as frontmatter
+import carte_cli.utils.frontmatter as frontmatter
 
 
-@patch("carte.utils.frontmatter._read_file", autospec=True)
+@patch("carte_cli.utils.frontmatter._read_file", autospec=True)
 class TestFrontmatter(unittest.TestCase):
     def test_parse_empty_file(self, mock_read_file):
-        mock_read_file.return_value = []
+        mock_read_file.return_value = [""]
 
         metadata, content = frontmatter.parse("mock-file")
         mock_read_file.assert_called_once_with("mock-file")
         assert metadata == {}
         assert content == ""
 
-    @patch("carte.utils.frontmatter.yaml")
+    @patch("carte_cli.utils.frontmatter.yaml")
     def test_read_only_yaml(self, mock_yaml, mock_read_file):
-        mock_read_file.return_value = ["mock-yaml"]
+        mock_read_file.return_value = ["", "mock-yaml"]
 
         mock_metadata = {"mock-metadata": "meta"}
 
@@ -31,9 +31,9 @@ class TestFrontmatter(unittest.TestCase):
         assert metadata == mock_metadata
         assert content == ""
 
-    @patch("carte.utils.frontmatter.yaml")
+    @patch("carte_cli.utils.frontmatter.yaml")
     def test_read_with_content(self, mock_yaml, mock_read_file):
-        mock_read_file.return_value = ["mock-yaml", "mock-content"]
+        mock_read_file.return_value = ["", "mock-yaml", "mock-content"]
 
         mock_metadata = {"mock-metadata": "meta"}
 
@@ -46,10 +46,10 @@ class TestFrontmatter(unittest.TestCase):
         assert metadata == mock_metadata
         assert content == "mock-content"
 
-    @patch("carte.utils.frontmatter.print")
+    @patch("carte_cli.utils.frontmatter.print")
     def test_write_prints_correct_content(self, mock_print, mock_read_file):
         m = mock_open()
-        with patch("carte.utils.frontmatter.open", m):
+        with patch("carte_cli.utils.frontmatter.open", m):
 
             frontmatter.dump("test-file", {"mock-metadata": "meta"}, "mock-content")
 

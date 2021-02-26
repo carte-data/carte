@@ -1,7 +1,7 @@
 import io
+import importlib
 from ruamel.yaml import YAML
 from carte_cli.extractor.glue_extractor import GlueExtractor
-from databuilder.extractor.postgres_metadata_extractor import PostgresMetadataExtractor
 
 yaml = YAML()
 
@@ -13,6 +13,9 @@ def create_glue_connection(conn_dict):
 
 
 def create_postgres_connection(conn_dict):
+    PostgresMetadataExtractor = importlib.import_module(
+        "databuilder.extractor.postgres_metadata_extractor"
+    ).PostgresMetadataExtractor
     extractor = PostgresMetadataExtractor()
     extractor_scope = extractor.get_scope()
     config = conn_dict.get(CONFIG_KEY, {})

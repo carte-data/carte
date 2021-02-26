@@ -3,11 +3,11 @@ import unittest
 from unittest.mock import patch
 from pyhocon import ConfigFactory
 
-from carte.extractor.glue_extractor import GlueExtractor
-from carte.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte_cli.extractor.glue_extractor import GlueExtractor
+from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
 
-@patch("carte.extractor.glue_extractor.boto3.client", lambda x: None)
+@patch("carte_cli.extractor.glue_extractor.boto3.client", lambda x: None)
 class TestGlueExtractor(unittest.TestCase):
     def setUp(self) -> None:
         self.conf = ConfigFactory.from_dict({})
@@ -15,7 +15,7 @@ class TestGlueExtractor(unittest.TestCase):
     def test_extraction_with_empty_query_result(self) -> None:
 
         with patch.object(GlueExtractor, "_search_tables"):
-            extractor = GlueExtractor()
+            extractor = GlueExtractor("test-connection")
             extractor.init(self.conf)
 
             results = extractor.extract()
@@ -64,12 +64,12 @@ class TestGlueExtractor(unittest.TestCase):
                 }
             ]
 
-            extractor = GlueExtractor()
+            extractor = GlueExtractor("test-connection")
             extractor.init(self.conf)
             actual = extractor.extract()
             expected = TableMetadata(
                 name="test_table",
-                connection="glue",
+                connection="test-connection",
                 database="test_schema",
                 description=None,
                 location="test_location",
@@ -160,12 +160,12 @@ class TestGlueExtractor(unittest.TestCase):
                 },
             ]
 
-            extractor = GlueExtractor()
+            extractor = GlueExtractor("test-connection")
             extractor.init(self.conf)
 
             expected = TableMetadata(
                 name="test_table1",
-                connection="glue",
+                connection="test-connection",
                 database="test_schema1",
                 description=None,
                 location=None,
@@ -182,7 +182,7 @@ class TestGlueExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 name="test_table2",
-                connection="glue",
+                connection="test-connection",
                 database="test_schema1",
                 description=None,
                 location="test_location2",
@@ -197,7 +197,7 @@ class TestGlueExtractor(unittest.TestCase):
 
             expected = TableMetadata(
                 name="test_view1",
-                connection="glue",
+                connection="test-connection",
                 database="test_schema1",
                 description=None,
                 location=None,

@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from carte.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 from databuilder.models.table_metadata import ColumnMetadata as DatabuilderColumn
 from databuilder.models.table_metadata import (
     DescriptionMetadata as DatabuilderDescription,
@@ -77,7 +77,7 @@ class TestTableMetadata(unittest.TestCase):
 
         result = TableMetadata.from_databuilder(source_metadata)
 
-        assert result.database == "test-db"
+        assert result.database == "test-cluster"
         assert result.location == "test-connection://test-cluster.test-db/test-name"
         assert result.connection == "test-connection"
         assert len(result.columns) == 2
@@ -124,7 +124,7 @@ class TestTableMetadata(unittest.TestCase):
         assert result.columns == []
 
     def test_from_frontmatter_raises_with_no_name(self):
-        self.assertRaises(KeyError, TableMetadata.from_frontmatter, {}, None)
+        self.assertRaises(ValueError, TableMetadata.from_frontmatter, {}, None)
 
     def test_to_frontmatter(self):
         source = TableMetadata(
