@@ -34,7 +34,7 @@ connections:
 If you name this config `extract.config.yml`, then you can run an extraction with:
 
 ``` sh
-carte -c extract.config.yml -o data/datasets
+carte extract extract.config.yml -o data/datasets
 ```
 
 where the `-o` flag specifies the output folder.
