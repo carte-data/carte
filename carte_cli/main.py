@@ -11,6 +11,7 @@ from pyhocon import ConfigFactory
 
 from carte_cli.loader.carte_loader import CarteLoader
 from carte_cli.utils.config_parser import parse_config
+from carte_cli.scaffolding.frontend import create_frontend_dir
 
 app = typer.Typer()
 
@@ -36,7 +37,6 @@ def run_extraction(
     typer.echo("Running extraction...")
 
     with click_spinner.spinner():
-
         for extractor in extractors:
             task = DefaultTask(extractor=extractor, loader=carte_loader)
 
@@ -44,9 +44,14 @@ def run_extraction(
 
     typer.echo("Done!")
 
+
 @app.command("new")
-def new_frontend(name: str = typer.Argument(..., help="The name of the front end folder to create")):
-    pass
+def new_frontend(
+        name: str = typer.Argument(..., help="The name of the front end folder to create"),
+        no_admin: bool = typer.Option(False, "--no-admin", help="Disable admin for editing metadata"),
+        no_sample: bool = typer.Option(False, "--no-sample", help="Don't initialise sample data")
+):
+    create_frontend_dir(name, init_admin=(not no_admin), sample_data=(not no_sample))
 
 
 if __name__ == "__main__":
