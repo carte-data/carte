@@ -171,28 +171,6 @@ develop = ["requests (>=2.0.0,<3.0.0)", "nose", "coverage", "mock", "pyyaml", "n
 requests = ["requests (>=2.4.0,<3.0.0)"]
 
 [[package]]
-name = "gitdb"
-version = "4.0.5"
-description = "Git Object Database"
-category = "main"
-optional = false
-python-versions = ">=3.4"
-
-[package.dependencies]
-smmap = ">=3.0.1,<4"
-
-[[package]]
-name = "gitpython"
-version = "3.1.14"
-description = "Python Git Library"
-category = "main"
-optional = false
-python-versions = ">=3.4"
-
-[package.dependencies]
-gitdb = ">=4.0.1,<5"
-
-[[package]]
 name = "idna"
 version = "2.10"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -510,14 +488,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
-name = "smmap"
-version = "3.0.5"
-description = "A pure Python implementation of a sliding window memory map manager"
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
 name = "sqlalchemy"
 version = "1.3.23"
 description = "Database Abstraction Library"
@@ -625,7 +595,7 @@ postgres = ["psycopg2", "SQLAlchemy"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "6dd102b924e06305312cce360eda2d7425c8ad0e8a80c39a279d4f62a1de3078"
+content-hash = "be4a58fdf242160f93ef98088f1f83c83599c5ebe585092d869385eea13d0cb0"
 
 [metadata.files]
 amundsen-databuilder = [
@@ -678,14 +648,6 @@ colorama = [
 elasticsearch = [
     {file = "elasticsearch-6.8.1-py2.py3-none-any.whl", hash = "sha256:540d633afcc0a32972e4b489c4559c9a96e294850853238f7a18b1cbd267c2ed"},
     {file = "elasticsearch-6.8.1.tar.gz", hash = "sha256:a8062a00b61bc7babeea028530667583a68ecb1a9f59ab0b22ff7feaf70d3564"},
-]
-gitdb = [
-    {file = "gitdb-4.0.5-py3-none-any.whl", hash = "sha256:91f36bfb1ab7949b3b40e23736db18231bf7593edada2ba5c3a174a7b23657ac"},
-    {file = "gitdb-4.0.5.tar.gz", hash = "sha256:c9e1f2d0db7ddb9a704c2a0217be31214e91a4fe1dea1efad19ae42ba0c285c9"},
-]
-gitpython = [
-    {file = "GitPython-3.1.14-py3-none-any.whl", hash = "sha256:3283ae2fba31c913d857e12e5ba5f9a7772bbc064ae2bb09efafa71b0dd4939b"},
-    {file = "GitPython-3.1.14.tar.gz", hash = "sha256:be27633e7509e58391f10207cd32b2a6cf5b908f92d9cd30da2e514e1137af61"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -972,10 +934,6 @@ s3transfer = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
-]
-smmap = [
-    {file = "smmap-3.0.5-py2.py3-none-any.whl", hash = "sha256:7bfcf367828031dc893530a29cb35eb8c8f2d7c8f2d0989354d75d24c8573714"},
-    {file = "smmap-3.0.5.tar.gz", hash = "sha256:84c2751ef3072d4f6b2785ec7ee40244c6f45eb934d9e543e2c51f1bd3d54c50"},
 ]
 sqlalchemy = [
     {file = "SQLAlchemy-1.3.23-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:fd3b96f8c705af8e938eaa99cbd8fd1450f632d38cad55e7367c33b263bf98ec"},
