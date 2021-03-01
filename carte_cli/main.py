@@ -47,9 +47,13 @@ def run_extraction(
 
 @app.command("new")
 def new_frontend(
-        name: str = typer.Argument(..., help="The name of the front end folder to create"),
-        no_admin: bool = typer.Option(False, "--no-admin", help="Disable admin for editing metadata"),
-        no_sample: bool = typer.Option(False, "--no-sample", help="Don't initialise sample data")
+    name: str = typer.Argument(..., help="The name of the front end folder to create"),
+    no_admin: bool = typer.Option(
+        False, "--no-admin", help="Disable admin for editing metadata"
+    ),
+    no_sample: bool = typer.Option(
+        False, "--no-sample", help="Don't initialise sample data"
+    ),
 ):
     create_frontend_dir(name, init_admin=(not no_admin), sample_data=(not no_sample))
 

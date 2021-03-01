@@ -9,14 +9,18 @@ from carte_cli.utils.file_io import read_json, write_json
 CARTE_FRONTEND_REPO = "https://github.com/carte-data/carte-frontend.git"
 APP_NAME = "my-super-cli-app"
 
+
 def run_command(args: List[str]):
     subprocess.run(args)
+
 
 def clone_repo(target: str):
     run_command(["git", "clone", "--depth", "1", CARTE_FRONTEND_REPO, target])
 
+
 def remove_origin():
     run_command(["git", "remote", "rm", "origin"])
+
 
 def create_frontend_dir(target: str, init_admin: bool = True, sample_data: bool = True):
     typer.echo("Cloning front end template...")
