@@ -1,7 +1,10 @@
+from carte_cli.extractor.json_schema_extractor import JSONSchemaExtractor
 import io
 import importlib
+from pyhocon.exceptions import ConfigException
 from ruamel.yaml import YAML
 from carte_cli.extractor.glue_extractor import GlueExtractor
+from carte_cli.utils.file_io import read_yaml
 
 yaml = YAML()
 
@@ -35,16 +38,36 @@ def create_postgres_connection(conn_dict):
     }
 
 
+def create_json_schema_connection(conn_dict):
+    try:
+        connection_name = conn_dict["name"]
+        database = conn_dict["database"]
+        schema_path = conn_dict["schema_path"]
+    except KeyError:
+        raise ConfigException(
+            "The name, database, and schema_path values are required for JSON Schema connections"
+        )
+    return (
+        JSONSchemaExtractor(
+            connection_name,
+            database,
+            schema_path,
+            pivot_column=conn_dict.get("pivot_column"),
+            object_expand=conn_dict.get("object_expand"),
+        ),
+        {},
+    )
+
+
 CONNECTION_FACTORIES = {
     "glue": create_glue_connection,
     "postgresql": create_postgres_connection,
+    "json_schema": create_json_schema_connection,
 }
 
 
 def parse_config(filename):
-    data = _read_file(filename)
-
-    parsed_data = yaml.load(data)
+    parsed_data = read_yaml(filename)
 
     connections = parsed_data.get("connections", [])
 
