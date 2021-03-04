@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, List
+from typing import Any, List, Union
 from databuilder.models.table_metadata import TableMetadata as DatabuilderTableMetadata
 from databuilder.models.table_metadata import (
     ColumnMetadata as DatabuilderColumnMetadata,
@@ -28,10 +28,17 @@ class TableType(Enum):
 
 
 class ColumnMetadata:
-    def __init__(self, name: str, column_type: str, description: str):
+    def __init__(
+        self,
+        name: str,
+        column_type: str,
+        description: str = None,
+        values: Union[None, List[Any]] = None,
+    ):
         self.name = name
         self.column_type = column_type
         self.description = description
+        self.values = values
 
     @classmethod
     def from_databuilder(cls, column: DatabuilderColumnMetadata):
@@ -43,28 +50,33 @@ class ColumnMetadata:
                 else ""
             ),
             column_type=column.type,
+            values=None,
         )
 
     @classmethod
     def from_frontmatter(cls, meta_dict):
         return cls(
             name=meta_dict["name"],
-           column_type=meta_dict.get("type"),
+            column_type=meta_dict.get("type"),
             description=meta_dict.get("description"),
+            values=meta_dict.get("values"),
         )
 
     def to_frontmatter(self):
-        return {
+        frontmatter = {
             "name": self.name,
             "type": self.column_type,
             "description": self.description,
         }
 
+        if self.values is not None:
+            frontmatter["values"] = self.values
+
+        return frontmatter
+
     def __repr__(self) -> str:
-        return "CarteTableMetadata({!r}, {!r}, {!r})".format(
-            self.name,
-            self.column_type,
-            self.description,
+        return "CarteTableMetadata({!r}, {!r}, {!r}, {!r})".format(
+            self.name, self.column_type, self.description, self.values
         )
 
 
@@ -74,10 +86,10 @@ class TableMetadata:
         name: str,
         database: str,
         connection: str,
-        description: str,
         location: str,
         columns: List[ColumnMetadata],
         table_type: TableType,
+        description: str = None,
     ):
         self.name = name
         self.connection = connection
@@ -156,6 +168,7 @@ class TableMetadata:
                     name=column_name,
                     column_type=column.column_type,
                     description=merged_description,
+                    values=column.values,
                 )
             )
         return merged_columns
