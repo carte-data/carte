@@ -5,6 +5,7 @@ from databuilder.extractor.base_extractor import Extractor
 from pyhocon import ConfigTree
 import boto3
 import json
+import copy
 
 
 class JSONSchemaExtractor(Extractor):
@@ -18,7 +19,7 @@ class JSONSchemaExtractor(Extractor):
         database: str,
         schema_path: str,
         pivot_column: str = None,
-        object_expand: Iterable[str] = [],
+        object_expand: Iterable[str] = None,
     ):
         super().__init__()
         self.connection_name = connection_name
@@ -27,10 +28,10 @@ class JSONSchemaExtractor(Extractor):
         self.s3 = boto3.resource("s3")
         self.pivot_column = pivot_column
         self.object_expand = object_expand
+        self._extract_iter = iter(self._get_extract_iter())
 
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
-        self._extract_iter = iter(self._get_extract_iter())
 
     def extract(self) -> Any:
         try:
@@ -42,17 +43,23 @@ class JSONSchemaExtractor(Extractor):
         return "carte.extractor.json_schema"
 
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
-        if self.schema_path.startswith(self.S3_PROTOCOL):
-            schema = self._read_file_from_s3(self.schema_path)
-        else:
-            schema = read_json(self.schema_path)
+        schema = self._get_schema()
 
-        if schema["type"] != "object":
+        if "type" not in schema or schema["type"] != "object":
             raise ValueError("Schema type has to be 'object'")
 
         tables = self._process_schema(schema)
         for table in tables:
             yield table
+
+    def _get_schema(self):
+        if self.schema_path.startswith(self.S3_PROTOCOL):
+            schema = self._read_file_from_s3(self.schema_path)
+        else:
+            schema = read_json(self.schema_path)
+
+        return schema
+
 
     def _process_schema(
         self, schema: dict, column_prefix: str = ""
@@ -65,11 +72,13 @@ class JSONSchemaExtractor(Extractor):
             schemas = {}
             for constraint in schema["oneOf"]:
                 try:
-                    subschema_name = constraint[self.pivot_column]["const"]
+                    subschema_name = str(constraint["properties"][self.pivot_column][
+                        "const"
+                    ])
                 except KeyError:
                     raise ValueError("Pivot column inside oneOf should be a const")
 
-                merged_schema = self._deep_merge_dicts(constraint, schema.copy())
+                merged_schema = self._deep_merge_dicts(constraint, copy.deepcopy(schema))
                 schemas[subschema_name] = merged_schema
 
         else:
@@ -83,7 +92,11 @@ class JSONSchemaExtractor(Extractor):
                 # get node or create one
                 node = destination.setdefault(key, {})
                 self._deep_merge_dicts(value, node)
-            elif isinstance(value, list):
+            elif (
+                isinstance(value, list)
+                and key in destination
+                and isinstance(destination[key], list)
+            ):
                 destination[key] += value
             else:
                 destination[key] = value
@@ -96,7 +109,7 @@ class JSONSchemaExtractor(Extractor):
         for key, val in schema.get("properties").items():
             columns[key] = val
 
-            if key in self.object_expand:
+            if self.object_expand and key in self.object_expand:
                 for subkey, subval in val.get("properties", {}).items():
                     columns[f"{key}.{subkey}"] = subval
 
@@ -138,4 +151,4 @@ class JSONSchemaExtractor(Extractor):
         return json_content
 
     def normalise(self, value: str):
-        return value.replace("-", "_").replace(" ", "_")
+        return value.replace("-", "_").replace(" ", "_").lower()
