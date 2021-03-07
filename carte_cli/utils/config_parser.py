@@ -39,10 +39,11 @@ def create_postgres_connection(conn_dict):
 
 
 def create_json_schema_connection(conn_dict):
+    config = conn_dict.get(CONFIG_KEY, {})
     try:
-        connection_name = conn_dict["name"]
-        database = conn_dict["database"]
-        schema_path = conn_dict["schema_path"]
+        connection_name = conn_dict.get("name", "json_schema")
+        database = config["database"]
+        schema_path = config["schema_path"]
     except KeyError:
         raise ConfigException(
             "The name, database, and schema_path values are required for JSON Schema connections"
@@ -52,8 +53,8 @@ def create_json_schema_connection(conn_dict):
             connection_name,
             database,
             schema_path,
-            pivot_column=conn_dict.get("pivot_column"),
-            object_expand=conn_dict.get("object_expand"),
+            pivot_column=config.get("pivot_column"),
+            object_expand=config.get("object_expand"),
         ),
         {},
     )
