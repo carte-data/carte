@@ -33,7 +33,7 @@ def dump(filename, metadata, content):
     yaml.dump(metadata, buf)
     buf.write(FRONTMATTER_SEPARATOR)
     if content is not None:
-        buf.write(content)
+        buf.write(content.strip())
 
     with open(filename, "w") as f:
         print(buf.getvalue(), file=f)
