@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
         matrix:
-          python-version: ['3.6.x', '3.7.x']
+          python-version: ['3.7.x', '3.8.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -21,7 +21,12 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: pip3 install -r requirements.txt
+      - name: Run image
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: '1.1.4'
+      - name: Install library
+        run: poetry install --no-interaction
       - name: Run python unit tests
-        run: make test
+        run: |
+          poetry run python -bb -m pytest tests
