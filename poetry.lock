@@ -595,7 +595,7 @@ postgres = ["psycopg2", "SQLAlchemy"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "be4a58fdf242160f93ef98088f1f83c83599c5ebe585092d869385eea13d0cb0"
+content-hash = "71336fc09e83b4b5cc3af42eb55c9e8471e6cbb9a37167f10047493f9e890ade"
 
 [metadata.files]
 amundsen-databuilder = [
