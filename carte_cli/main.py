@@ -12,6 +12,7 @@ from pyhocon import ConfigFactory
 from carte_cli.loader.carte_loader import CarteLoader
 from carte_cli.utils.config_parser import parse_config
 from carte_cli.scaffolding.frontend import create_frontend_dir
+from carte_cli.utils.flatten import flatten as execute_flatten
 
 app = typer.Typer()
 
@@ -56,6 +57,19 @@ def new_frontend(
     ),
 ):
     create_frontend_dir(name, init_admin=(not no_admin), sample_data=(not no_sample))
+
+
+@app.command("flatten")
+def flatten(
+    input_dir: str = typer.Argument(
+        ..., help="The source metadata directory, the same as the extraction output"
+    ),
+    output_dir: str = typer.Argument(
+        ..., help="The destination directory for flattened markdown files"
+    ),
+):
+    execute_flatten(input_dir, output_dir)
+
 
 
 if __name__ == "__main__":
