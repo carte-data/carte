@@ -21,14 +21,12 @@ def flatten(input_dir: str, output_dir: str) -> None:
     template = _get_flattened_template()
 
     file_paths = glob.glob(input_dir + "/*/*/*.md", recursive=True)
-    print(file_paths)
     output_paths = [
         os.path.join(output_dir, file_path[len(input_dir) :])
         for file_path in file_paths
     ]
 
     for file_path, output_path in zip(file_paths, output_paths):
-        print(f"Flattening dataset {file_path}")
         metadata, content = frontmatter.parse(file_path)
         dataset = TableMetadata.from_frontmatter(metadata, content)
         flattened_metadata, flattened_content = flatten_dataset(dataset, template)
