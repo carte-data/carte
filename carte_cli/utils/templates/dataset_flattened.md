@@ -3,7 +3,7 @@
 <a class="edit-link" href="/admin/#/collections/datasets/entries/{{dataset.connection}}/{{dataset.database}}/{{dataset.name}}"></a>
 
 #### Type: {: .attribute }
-`{{ dataset.table_type }}`
+`{{ dataset.table_type.value }}`
 
 <br>
 {: .attribute-break}
@@ -20,11 +20,16 @@
 <br>
 {: .attribute-break}
 
-#### Description
+## Description
 
+{% if dataset.description.strip() != '' %}
 {{ dataset.description.strip() }}
+{% else %}
+No description
+{: .no-description }
+{% endif %}
 
-#### Columns
+## Columns
 
 {% for column in dataset.columns %}
 ##### {{ column.name }} {: .column-name }
