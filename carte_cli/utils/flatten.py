@@ -39,9 +39,8 @@ def flatten(input_dir: str, output_dir: str, template_path: str) -> None:
         metadata, content = frontmatter.parse(file_path)
         dataset = TableMetadata.from_frontmatter(metadata, content)
         flattened_metadata, flattened_content = flatten_dataset(dataset, template)
-        output_file = os.path.join(output_dir, output_path)
-        Path("/".join(output_file.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
-        frontmatter.dump(output_file, flattened_metadata, flattened_content)
+        Path("/".join(output_path.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
+        frontmatter.dump(output_path, flattened_metadata, flattened_content)
 
     print("Done!")
 
