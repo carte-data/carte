@@ -67,8 +67,9 @@ def flatten(
     output_dir: str = typer.Argument(
         ..., help="The destination directory for flattened markdown files"
     ),
+    template: str = typer.Option(None, "--template", "-t", help="The template to use for flattening datasets")
 ):
-    execute_flatten(input_dir, output_dir)
+    execute_flatten(input_dir, output_dir, template)
 
 
 
