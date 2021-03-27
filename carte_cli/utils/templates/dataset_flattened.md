@@ -1,6 +1,6 @@
 # {{ dataset.name }} {: .page-title }
 
-<a class="edit-link" href="/admin/#/collections/datasets/entries/{{dataset.connection}}/{{dataset.database}}/{{dataset.name}}"></a>
+<a class="edit-link" target="_blank" href="/admin/#/collections/datasets/entries/{{dataset.connection}}/{{dataset.database}}/{{dataset.name}}"></a>
 
 #### Type: {: .attribute }
 `{{ dataset.table_type.value }}`
@@ -36,12 +36,22 @@ No description
 
 `{{ column.column_type }}`{: .column-type }
 {% if column.description != none %}
-{{- column.description -}}
+{{ column.description.strip() }}
 {: .column-description }
 
 {% else %}
-No description
-{: .column-description .no-description }
+<br>
+{: .column-name-break}
+
+{% endif %}
+{% if column.values != none %}
+{% for column_value in column.values %}
+{{ column_value }}
+{: .column-value }
+{% endfor %}
+
+<br>
+{: .column-value-break}
 
 {% endif %}
 {% endfor %}
