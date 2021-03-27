@@ -12,6 +12,10 @@ def read_yaml(path: str):
 
     return yaml.load(data)
 
+def write_yaml(data, path: str, **kwargs):
+    with open(path, "w") as f:
+        yaml.dump(data, f, **kwargs)
+
 
 def read_json(path: str):
     with open(path, "r") as f:

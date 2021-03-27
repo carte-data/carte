@@ -4,10 +4,9 @@ from typing import List
 import typer
 import shutil
 
-from carte_cli.utils.file_io import read_json, write_json
+from carte_cli.utils.file_io import read_yaml, write_yaml
 
 CARTE_FRONTEND_REPO = "https://github.com/carte-data/carte-frontend.git"
-APP_NAME = "my-super-cli-app"
 
 
 def run_command(args: List[str]):
@@ -35,16 +34,17 @@ def create_frontend_dir(target: str, init_admin: bool = True, sample_data: bool 
 
 def apply_settings(target: str, init_admin: bool, sample_data: bool):
     if not init_admin:
-        shutil.rmtree(os.path.join("public", "admin"))
+        shutil.rmtree(os.path.join("content", "admin"))
     if not sample_data:
-        shutil.rmtree(os.path.join("data", "datasets", "postgres"))
+        shutil.rmtree(os.path.join("datasets", "postgres"))
 
-    package_json_path = "package.json"
-    package_json = read_json(package_json_path)
-    package_json["name"] = target
-    if not init_admin:
-        package_json["dependencies"].pop("netlify-cms-app", None)
+    mkdocs_path = "mkdocs.yml"
+    mkdocs_config = read_yaml(mkdocs_path)
+    mkdocs_config["site_name"] = target
+    mkdocs_config["repo_url"] = ""
+    mkdocs_config["repo_name"] = ""
+    mkdocs_config["site_url"] = ""
 
-    write_json(package_json, package_json_path, indent=2)
-    run_command(["git", "add", "package.json"])
+    write_yaml(mkdocs_config, mkdocs_path)
+    run_command(["git", "add", mkdocs_path])
     run_command(["git", "commit", "-m", "Initialise Carte"])
