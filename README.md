@@ -1,7 +1,7 @@
 # Carte
 [![PyPI version](https://badge.fury.io/py/carte-cli.svg)](https://badge.fury.io/py/carte-cli)
-[![License](http://img.shields.io/:license-Apache%202-blue.svg)](LICENSE)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/carte-cli.svg)](https://pypi.org/project/carte-cli/)
+![PyPI - License](https://img.shields.io/pypi/l/carte-cli)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/carte_cli.svg)](https://pypi.org/project/carte-cli/)
 
 
 Carte is a Python library for extracting metadata from your data sources and generating structured Markdown files from it. It's a companion library to the Carte front end, a lightweight data catalog for fast moving data teams. Carte currently supports the AWS Glue catalog and PostgreSQL but more sources are coming.
