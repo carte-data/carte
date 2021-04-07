@@ -80,6 +80,7 @@ class TestTableMetadata(unittest.TestCase):
         assert result.database == "test-cluster"
         assert result.location == "test-connection://test-cluster.test-db/test-name"
         assert result.connection == "test-connection"
+        assert len(result.tags) == 0
         assert len(result.columns) == 2
         assert (
             result.columns[0].__repr__()
@@ -102,6 +103,7 @@ class TestTableMetadata(unittest.TestCase):
             "location": "test-location",
             "connection": "test-connection",
             "columns": [],
+            "tags": [{"key": "a", "value": "val1"}, {"key": "b", "value": "val2"}],
             "table_type": "table",
         }
 
@@ -113,6 +115,10 @@ class TestTableMetadata(unittest.TestCase):
         assert result.connection == "test-connection"
         assert result.columns == []
         assert result.table_type == TableType.TABLE
+        assert result.tags[0].key == "a"
+        assert result.tags[0].value == "val1"
+        assert result.tags[1].key == "b"
+        assert result.tags[1].value == "val2"
 
     def test_from_frontmatter_no_values(self):
         source_metadata = {"title": "test-name"}

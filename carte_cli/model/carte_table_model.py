@@ -80,6 +80,22 @@ class ColumnMetadata:
         )
 
 
+class TableTag:
+    def __init__(self, key: str, value: str):
+        self.key = key
+        self.value = value
+
+    @classmethod
+    def from_frontmatter(cls, meta_dict: dict):
+        return cls(key=meta_dict["key"], value=meta_dict["value"])
+
+    def to_frontmatter(self):
+        return {"key": self.key, "value": self.value}
+
+    def __repr__(self) -> str:
+        return "TableTag({!r}: {!r})".format(self.key, self.value)
+
+
 class TableMetadata:
     def __init__(
         self,
@@ -89,6 +105,7 @@ class TableMetadata:
         location: str,
         columns: List[ColumnMetadata],
         table_type: TableType,
+        tags: List[TableTag] = [],
         description: str = None,
     ):
         self.name = name
@@ -97,6 +114,7 @@ class TableMetadata:
         self.description = description
         self.location = location
         self.columns = columns
+        self.tags = tags
         self.table_type = table_type
 
     @classmethod
@@ -114,6 +132,7 @@ class TableMetadata:
                 else None
             ),
             columns=columns,
+            tags=[],
             table_type=(TableType.VIEW if table.is_view else TableType.TABLE),
         )
 
@@ -124,6 +143,8 @@ class TableMetadata:
             for col_dict in metadata.get("columns", [])
         ]
 
+        tags = [TableTag.from_frontmatter(tag) for tag in metadata.get("tags", [])]
+
         try:
             return cls(
                 name=metadata["title"],
@@ -132,6 +153,7 @@ class TableMetadata:
                 location=metadata.get("location", None),
                 connection=metadata.get("connection", None),
                 columns=columns,
+                tags=tags,
                 table_type=TableType(metadata.get("table_type", "table")),
             )
         except KeyError as e:
@@ -144,6 +166,7 @@ class TableMetadata:
             "location": self.location,
             "database": self.database,
             "columns": [col.to_frontmatter() for col in self.columns],
+            "tags": [tag.to_frontmatter() for tag in self.tags],
             "table_type": self.table_type.value,
         }
         return metadata, self.description
@@ -189,6 +212,7 @@ class TableMetadata:
             description=existing.description,
             location=self.location,
             columns=self.merge_columns(existing),
+            tags=existing.tags,
             table_type=self.table_type,
         )
 
@@ -196,12 +220,15 @@ class TableMetadata:
         return f"{self.connection}/{self.database}/{self.name}"
 
     def __repr__(self) -> str:
-        return "CarteTableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})".format(
-            self.name,
-            self.database,
-            self.connection,
-            self.description,
-            self.location,
-            self.columns,
-            self.table_type,
+        return (
+            "CarteTableMetadata({!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r}, {!r})".format(
+                self.name,
+                self.database,
+                self.connection,
+                self.description,
+                self.location,
+                self.columns,
+                self.tags,
+                self.table_type,
+            )
         )
