@@ -34,11 +34,13 @@ class ColumnMetadata:
         column_type: str,
         description: str = None,
         values: Union[None, List[Any]] = None,
+        example_value: str = None,
     ):
         self.name = name
         self.column_type = column_type
         self.description = description
         self.values = values
+        self.example_value = example_value
 
     @classmethod
     def from_databuilder(cls, column: DatabuilderColumnMetadata):
@@ -50,7 +52,6 @@ class ColumnMetadata:
                 else ""
             ),
             column_type=column.type,
-            values=None,
         )
 
     @classmethod
@@ -60,6 +61,7 @@ class ColumnMetadata:
             column_type=meta_dict.get("type"),
             description=meta_dict.get("description"),
             values=meta_dict.get("values"),
+            example_value=meta_dict.get("example"),
         )
 
     def to_frontmatter(self):
@@ -67,6 +69,7 @@ class ColumnMetadata:
             "name": self.name,
             "type": self.column_type,
             "description": self.description,
+            "example": self.example_value,
         }
 
         if self.values is not None:
@@ -75,8 +78,12 @@ class ColumnMetadata:
         return frontmatter
 
     def __repr__(self) -> str:
-        return "CarteTableMetadata({!r}, {!r}, {!r}, {!r})".format(
-            self.name, self.column_type, self.description, self.values
+        return "CarteTableMetadata({!r}, {!r}, {!r}, {!r}, {!r})".format(
+            self.name,
+            self.column_type,
+            self.description,
+            self.values,
+            self.example_value,
         )
 
 
