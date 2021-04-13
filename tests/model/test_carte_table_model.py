@@ -26,6 +26,7 @@ class TestColumnMetadata(unittest.TestCase):
             "name": "test-name",
             "description": "test-description",
             "type": "test-type",
+            "example": 2020,
         }
 
         result = ColumnMetadata.from_frontmatter(source_metadata)
@@ -33,6 +34,7 @@ class TestColumnMetadata(unittest.TestCase):
         assert result.name == "test-name"
         assert result.description == "test-description"
         assert result.column_type == "test-type"
+        assert result.example_value == 2020
 
     def test_from_frontmatter_no_values(self):
         source_metadata = {"name": "test-name"}
@@ -48,7 +50,10 @@ class TestColumnMetadata(unittest.TestCase):
 
     def test_to_frontmatter(self):
         source = ColumnMetadata(
-            name="test-name", column_type="test-type", description="test-description"
+            name="test-name",
+            column_type="test-type",
+            description="test-description",
+            example_value="test-example",
         )
 
         result = source.to_frontmatter()
@@ -57,6 +62,7 @@ class TestColumnMetadata(unittest.TestCase):
             "name": "test-name",
             "type": "test-type",
             "description": "test-description",
+            "example": "test-example",
         }
 
 
@@ -102,7 +108,14 @@ class TestTableMetadata(unittest.TestCase):
             "database": "test-db",
             "location": "test-location",
             "connection": "test-connection",
-            "columns": [],
+            "columns": [
+                {
+                    "name": "column-a",
+                    "type": "test-type",
+                    "example": "test-example",
+                    "description": "test-description",
+                }
+            ],
             "tags": [{"key": "a", "value": "val1"}, {"key": "b", "value": "val2"}],
             "table_type": "table",
         }
@@ -113,7 +126,8 @@ class TestTableMetadata(unittest.TestCase):
         assert result.database == "test-db"
         assert result.location == "test-location"
         assert result.connection == "test-connection"
-        assert result.columns == []
+        assert result.columns[0].__repr__() == ColumnMetadata("column-a", "test-type", "test-description", example_value="test-example").__repr__()
+        assert len(result.columns) == 1
         assert result.table_type == TableType.TABLE
         assert result.tags[0].key == "a"
         assert result.tags[0].value == "val1"

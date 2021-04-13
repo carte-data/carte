@@ -193,12 +193,18 @@ class TableMetadata:
                 if preserve_descriptions and column_name in existing_columns_dict
                 else column.description
             )
+            merged_example = (
+                existing_columns_dict[column_name].example_value
+                if preserve_descriptions and column_name in existing_columns_dict
+                else column.example_value
+            )
             merged_columns.append(
                 ColumnMetadata(
                     name=column_name,
                     column_type=column.column_type,
                     description=merged_description,
                     values=column.values,
+                    example_value=merged_example,
                 )
             )
         return merged_columns
