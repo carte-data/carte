@@ -43,9 +43,6 @@ def test_load_carte_metadata(mock_os, mock_frontmatter, patched_config):
     loader.close()
 
     mock_frontmatter.dump.assert_called_with("mock_path", *test_record.to_frontmatter())
-    mock_os.path.join.assert_called_with(
-        ".", "tables", f"{test_record.get_file_name()}.md"
-    )
 
 
 @patch("carte_cli.loader.carte_loader.frontmatter")
