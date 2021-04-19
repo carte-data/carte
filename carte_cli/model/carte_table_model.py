@@ -10,7 +10,8 @@ from databuilder.models.table_metadata import (
 
 
 def get_description_text(description: DatabuilderDescription):
-    return description._text
+    if hasattr(description, 'text'):
+        return description.text
 
 
 class ColumnType(Enum):

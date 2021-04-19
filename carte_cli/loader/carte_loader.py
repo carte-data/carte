@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os.path
+import os
 from pathlib import Path
 from typing import Union
 from databuilder.loader.base_loader import Loader
@@ -15,6 +15,7 @@ import carte_cli.utils.frontmatter as frontmatter
 TABLES_OUTPUT_PATH = "content/tables"
 JOBS_OUTPUT_PATH = "content/jobs"
 FRONTMATTER_SEPARATOR = "---"
+MANIFESTS_FILE = "manifests"
 
 
 class CarteLoader(Loader):
@@ -25,6 +26,14 @@ class CarteLoader(Loader):
             "tables_output_path", TABLES_OUTPUT_PATH
         )
         self.jobs_path = self.conf.get_string("jobs_output_path", JOBS_OUTPUT_PATH)
+        self.processed_files = []
+
+        default_manifests_path = os.path.join(
+            self.base_directory, self.tables_path, MANIFESTS_FILE
+        )
+        self.manifests_path = self.conf.get_string(
+            "manifests_path", default_manifests_path
+        )
 
     def load(
         self, record: Union[None, JobMetadata, DatabuilderTableMetadata, TableMetadata]
@@ -64,12 +73,21 @@ class CarteLoader(Loader):
                 raise ValueError(f"{e}\nFile name: {full_file_name}")
 
         frontmatter.dump(full_file_name, *extractor_metadata.to_frontmatter())
+        with open(
+            os.path.join(self.base_directory, self.tables_path, MANIFESTS_FILE), "a"
+        ) as manifests_file:
+            manifests_file.write(f"{record.get_file_name()}\n")
 
     def get_table_file_name(self, record: TableMetadata):
-        return os.path.join(self.base_directory, self.tables_path, f"{record.get_file_name()}.md")
+        return os.path.join(
+            self.base_directory, self.tables_path, f"{record.get_file_name()}.md"
+        )
 
     def load_job(self, record: JobMetadata):
         pass
 
     def get_scope(self) -> str:
         return "loader.carte"
+
+    def get_manifests_path(self) -> str:
+        return self.manifests_path
