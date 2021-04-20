@@ -17,8 +17,12 @@ class RemoveDeletedPublisher(Publisher):
     def _get_datasets_to_delete(
         self, datasets: Set[str], file_paths: List[str]
     ) -> Iterator[str]:
+        prefix_length = len(self.tables_path)
+        if not self.tables_path.endswith("/"):
+            prefix_length += 1
+
         file_ids = [
-            path[(len(self.tables_path) + 1) : -(len(".md"))] for path in file_paths
+            path[prefix_length : -(len(".md"))] for path in file_paths
         ]
 
         for file_path, file_id in zip(file_paths, file_ids):
