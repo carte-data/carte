@@ -20,6 +20,7 @@ class JSONSchemaExtractor(Extractor):
         schema_path: str,
         pivot_column: str = None,
         object_expand: Iterable[str] = None,
+        extract_descriptions: bool = False,
     ):
         super().__init__()
         self.connection_name = connection_name
@@ -28,6 +29,7 @@ class JSONSchemaExtractor(Extractor):
         self.s3 = boto3.resource("s3")
         self.pivot_column = pivot_column
         self.object_expand = object_expand
+        self.extract_descriptions = extract_descriptions
         self._extract_iter = iter(self._get_extract_iter())
 
     def init(self, conf: ConfigTree) -> None:
@@ -60,7 +62,6 @@ class JSONSchemaExtractor(Extractor):
 
         return schema
 
-
     def _process_schema(
         self, schema: dict, column_prefix: str = ""
     ) -> Iterable[TableMetadata]:
@@ -72,13 +73,15 @@ class JSONSchemaExtractor(Extractor):
             schemas = {}
             for constraint in schema["oneOf"]:
                 try:
-                    subschema_name = str(constraint["properties"][self.pivot_column][
-                        "const"
-                    ])
+                    subschema_name = str(
+                        constraint["properties"][self.pivot_column]["const"]
+                    )
                 except KeyError:
                     raise ValueError("Pivot column inside oneOf should be a const")
 
-                merged_schema = self._deep_merge_dicts(constraint, copy.deepcopy(schema))
+                merged_schema = self._deep_merge_dicts(
+                    constraint, copy.deepcopy(schema)
+                )
                 schemas[subschema_name] = merged_schema
 
         else:
@@ -118,8 +121,11 @@ class JSONSchemaExtractor(Extractor):
             for column_name, column_def in columns.items()
         ]
 
+        description = schema.get("description") if self.extract_descriptions else None
+
         return TableMetadata(
             name=name,
+            description=description,
             database=self.database,
             connection=self.connection_name,
             location=self.schema_path,
@@ -134,9 +140,15 @@ class JSONSchemaExtractor(Extractor):
         column_type = column_def.get("type", "") + (
             " (required)" if is_required else ""
         )
-        column_values = column_def.get("enum", None)
+        column_values = column_def.get("enum")
+        column_description = (
+            column_def.get("description") if self.extract_descriptions else None
+        )
         return ColumnMetadata(
-            name=column_name, column_type=column_type, values=column_values
+            name=column_name,
+            column_type=column_type,
+            values=column_values,
+            description=column_description,
         )
 
     def _read_file_from_s3(self, path):
