@@ -196,9 +196,13 @@ class TestJSONSchemaExtractor(unittest.TestCase):
 
             results = extractor.extract()
             self.assertEqual(len(results.columns), 5)
-            self.assertEqual(results.columns[2].__repr__(), ColumnMetadata("test-props", "object").__repr__())
             self.assertEqual(
-                results.columns[3].__repr__(), ColumnMetadata("test-props.person-prop-1", "string").__repr__()
+                results.columns[2].__repr__(),
+                ColumnMetadata("test-props", "object").__repr__(),
+            )
+            self.assertEqual(
+                results.columns[3].__repr__(),
+                ColumnMetadata("test-props.person-prop-1", "string").__repr__(),
             )
             self.assertEqual(
                 results.columns[4].__repr__(),
@@ -226,23 +230,19 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                         "properties": {
                             "name": {"const": "John"},
                             "test-props": {
-                                "properties": {
-                                    "person-prop-3": {"type": "float"}
-                                }
-                            }
+                                "properties": {"person-prop-3": {"type": "float"}}
+                            },
                         }
                     },
                     {
                         "properties": {
                             "name": {"const": "Mary"},
                             "test-props": {
-                                "properties": {
-                                    "person-prop-4": {"type": "float"}
-                                }
-                            }
+                                "properties": {"person-prop-4": {"type": "float"}}
+                            },
                         }
-                    }
-                ]
+                    },
+                ],
             }
 
             extractor = JSONSchemaExtractor(
@@ -265,6 +265,42 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             results = extractor.extract()
             self.assertEqual(results.name, "Mary")
             self.assertEqual(len(results.columns), 6)
-            self.assertEqual(
-                results.columns[5].name, "test-props.person-prop-4"
+            self.assertEqual(results.columns[5].name, "test-props.person-prop-4")
+
+    def test_extracts_descriptions(self) -> None:
+        with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
+            mock_get_schema.return_value = {
+                "type": "object",
+                "title": "test-schema",
+                "properties": {
+                    "name": {"type": "string", "description": "name-description"},
+                    "age": {"type": "integer"},
+                    "test-props": {
+                        "type": "object",
+                        "properties": {
+                            "person-prop-1": {"type": "string"},
+                            "person-prop-2": {
+                                "type": "integer",
+                                "description": "p2-description",
+                            },
+                        },
+                    },
+                },
+            }
+
+            extractor = JSONSchemaExtractor(
+                "test-connection",
+                "test-database",
+                "test-schema-path",
+                object_expand=["test-props"],
+                extract_descriptions=True,
             )
+            extractor.init(self.conf)
+
+            results = extractor.extract()
+            print(results.columns)
+            self.assertEqual(results.columns[0].description, "name-description")
+            self.assertIsNone(results.columns[1].description)
+            self.assertIsNone(results.columns[2].description)
+            self.assertIsNone(results.columns[3].description)
+            self.assertEqual(results.columns[4].description, "p2-description")
