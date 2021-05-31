@@ -55,6 +55,7 @@ def create_json_schema_connection(conn_dict):
             schema_path,
             pivot_column=config.get("pivot_column"),
             object_expand=config.get("object_expand"),
+            extract_descriptions=config.get("extract_descriptions", False),
         ),
         {},
     )
