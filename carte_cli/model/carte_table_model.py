@@ -219,11 +219,13 @@ class TableMetadata:
                 f"Database not equal! Existing: {existing.database}, new: {self.database}"
             )
 
+        description = existing.description if not self.description else self.description
+
         return TableMetadata(
             name=self.name,
             database=self.database,
             connection=self.connection,
-            description=existing.description,
+            description=description,
             location=self.location,
             columns=self.merge_columns(existing),
             tags=existing.tags,
