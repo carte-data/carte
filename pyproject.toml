@@ -14,7 +14,7 @@ carte = "carte_cli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-amundsen-databuilder = "^4.1.0"
+amundsen-databuilder = "4.2.2"
 "ruamel.yaml" = "^0.16.12"
 boto3 = "^1.17.2"
 typer = "^0.3.2"
