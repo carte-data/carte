@@ -12,6 +12,7 @@ class JSONSchemaExtractor(Extractor):
 
     SCHEMA_PATH_KEY = "schema_path"
     S3_PROTOCOL = "s3://"
+    DESCRIPTION_KEY = "description"
 
     def __init__(
         self,
@@ -121,7 +122,9 @@ class JSONSchemaExtractor(Extractor):
             for column_name, column_def in columns.items()
         ]
 
-        description = schema.get("description") if self.extract_descriptions else None
+        description = (
+            schema.get(self.DESCRIPTION_KEY) if self.extract_descriptions else None
+        )
 
         return TableMetadata(
             name=name,
@@ -142,7 +145,7 @@ class JSONSchemaExtractor(Extractor):
         )
         column_values = column_def.get("enum")
         column_description = (
-            column_def.get("description") if self.extract_descriptions else None
+            column_def.get(self.DESCRIPTION_KEY) if self.extract_descriptions else None
         )
         return ColumnMetadata(
             name=column_name,
