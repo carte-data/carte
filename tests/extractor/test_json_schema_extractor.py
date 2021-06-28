@@ -301,3 +301,40 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             self.assertIsNone(results.columns[2].description)
             self.assertIsNone(results.columns[3].description)
             self.assertEqual(results.columns[4].description, "p2-description")
+
+    def test_filters_expanded_columns(self) -> None:
+        with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
+            mock_get_schema.return_value = {
+                "type": "object",
+                "title": "test-schema",
+                "properties": {
+                    "name": {"type": "string", "description": "name-description"},
+                    "age": {"type": "integer"},
+                    "test-props": {
+                        "type": "object",
+                        "properties": {
+                            "person-prop-1": {"type": "string"},
+                            "person-prop-2": {
+                                "type": "integer",
+                                "description": "p2-description",
+                            },
+                        },
+                    },
+                },
+            }
+
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf(
+                    {
+                        "object_expand": ["test-props"],
+                        "filter_columns": "^test-props"
+                    }
+                )
+            )
+
+            results = extractor.extract()
+            self.assertEqual(len(results.columns), 3)
+            self.assertEqual(results.columns[0].name, "test-props")
+            self.assertEqual(results.columns[1].name, "test-props.person-prop-1")
+            self.assertEqual(results.columns[2].name, "test-props.person-prop-2")
