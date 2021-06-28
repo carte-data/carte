@@ -2,14 +2,21 @@ import boto3
 import unittest
 from unittest.mock import patch
 from pyhocon import ConfigFactory
+from pyhocon.config_tree import ConfigTree
 
 from carte_cli.extractor.json_schema_extractor import JSONSchemaExtractor
 from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
 
 
 class TestJSONSchemaExtractor(unittest.TestCase):
-    def setUp(self) -> None:
-        self.conf = ConfigFactory.from_dict({})
+    def get_conf(self, additional_config: dict = {}) -> ConfigTree:
+        return ConfigFactory.from_dict(
+            {
+                JSONSchemaExtractor.DATABASE_KEY: "test-database",
+                JSONSchemaExtractor.SCHEMA_PATH_KEY: "test-schema-path",
+                **additional_config,
+            }
+        )
 
     def test_extraction_with_no_columns(self) -> None:
         with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
@@ -18,10 +25,8 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "title": "test-schema",
                 "properties": {},
             }
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path"
-            )
-            extractor.init(self.conf)
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(self.get_conf())
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
@@ -31,10 +36,8 @@ class TestJSONSchemaExtractor(unittest.TestCase):
     def test_extraction_raises_with_no_type(self) -> None:
         with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
             mock_get_schema.return_value = {}
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path"
-            )
-            extractor.init(self.conf)
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(self.get_conf())
 
             with self.assertRaises(ValueError):
                 results = extractor.extract()
@@ -47,10 +50,8 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "properties": {"name": {"type": "string"}, "age": {"type": "integer"}},
                 "required": ["name"],
             }
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path"
-            )
-            extractor.init(self.conf)
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(self.get_conf())
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
@@ -80,10 +81,10 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "required": ["name"],
             }
 
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path", "glasses"
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf({"pivot_column": "glasses"})
             )
-            extractor.init(self.conf)
 
             with self.assertRaises(ValueError):
                 results = extractor.extract()
@@ -109,11 +110,10 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                     }
                 ],
             }
-
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path", "glasses"
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf({"pivot_column": "glasses"})
             )
-            extractor.init(self.conf)
 
             with self.assertRaises(ValueError):
                 results = extractor.extract()
@@ -145,10 +145,10 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
 
-            extractor = JSONSchemaExtractor(
-                "test-connection", "test-database", "test-schema-path", "glasses"
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf({"pivot_column": "glasses"})
             )
-            extractor.init(self.conf)
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
@@ -186,13 +186,8 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 },
             }
 
-            extractor = JSONSchemaExtractor(
-                "test-connection",
-                "test-database",
-                "test-schema-path",
-                object_expand=["test-props"],
-            )
-            extractor.init(self.conf)
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(self.get_conf({"object_expand": ["test-props"]}))
 
             results = extractor.extract()
             self.assertEqual(len(results.columns), 5)
@@ -245,14 +240,15 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
 
-            extractor = JSONSchemaExtractor(
-                "test-connection",
-                "test-database",
-                "test-schema-path",
-                "name",
-                object_expand=["test-props"],
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf(
+                    {
+                        "object_expand": ["test-props"],
+                        "pivot_column": "name",
+                    }
+                )
             )
-            extractor.init(self.conf)
 
             results = extractor.extract()
             self.assertEqual(results.name, "John")
@@ -288,14 +284,15 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 },
             }
 
-            extractor = JSONSchemaExtractor(
-                "test-connection",
-                "test-database",
-                "test-schema-path",
-                object_expand=["test-props"],
-                extract_descriptions=True,
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(
+                self.get_conf(
+                    {
+                        "object_expand": ["test-props"],
+                        "extract_descriptions": True,
+                    }
+                )
             )
-            extractor.init(self.conf)
 
             results = extractor.extract()
             print(results.columns)

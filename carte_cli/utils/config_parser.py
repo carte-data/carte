@@ -1,3 +1,4 @@
+from typing import List
 from carte_cli.extractor.json_schema_extractor import JSONSchemaExtractor
 import io
 import importlib
@@ -9,6 +10,13 @@ from carte_cli.utils.file_io import read_yaml
 yaml = YAML()
 
 CONFIG_KEY = "config"
+
+
+def check_required_config_present(required_keys: List[str], config_dict: dict):
+    config_keys_set = set(config_dict.keys())
+    required_keys_set = set(required_keys)
+    diff = required_keys_set - config_keys_set
+    return None if len(diff) == 0 else diff
 
 
 def create_glue_connection(conn_dict):
@@ -40,22 +48,17 @@ def create_postgres_connection(conn_dict):
 
 def create_json_schema_connection(conn_dict):
     config = conn_dict.get(CONFIG_KEY, {})
-    try:
-        connection_name = conn_dict.get("name", "json_schema")
-        database = config["database"]
-        schema_path = config["schema_path"]
-    except KeyError:
+    connection_name = conn_dict.get("name", "json_schema")
+    missing_params = check_required_config_present(
+        JSONSchemaExtractor.required_config_keys(), config
+    )
+    if missing_params is not None:
         raise ConfigException(
-            "The name, database, and schema_path values are required for JSON Schema connections"
+            f"The following values are required for JSON Schema connections: {missing_params}"
         )
     return (
         JSONSchemaExtractor(
             connection_name,
-            database,
-            schema_path,
-            pivot_column=config.get("pivot_column"),
-            object_expand=config.get("object_expand"),
-            extract_descriptions=config.get("extract_descriptions", False),
         ),
         {},
     )

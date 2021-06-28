@@ -13,28 +13,29 @@ class JSONSchemaExtractor(Extractor):
     SCHEMA_PATH_KEY = "schema_path"
     S3_PROTOCOL = "s3://"
     DESCRIPTION_KEY = "description"
+    DATABASE_KEY = "database"
 
     def __init__(
         self,
         connection_name: str,
-        database: str,
-        schema_path: str,
-        pivot_column: str = None,
-        object_expand: Iterable[str] = None,
-        extract_descriptions: bool = False,
     ):
         super().__init__()
         self.connection_name = connection_name
-        self.database = database
-        self.schema_path = schema_path
-        self.s3 = boto3.resource("s3")
-        self.pivot_column = pivot_column
-        self.object_expand = object_expand
-        self.extract_descriptions = extract_descriptions
-        self._extract_iter = iter(self._get_extract_iter())
 
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
+        self.s3 = boto3.resource("s3")
+        self.database = conf.get_string(self.DATABASE_KEY)
+        self.schema_path = conf.get_string(self.SCHEMA_PATH_KEY)
+        self.pivot_column = conf.get_string("pivot_column", None)
+        self.object_expand = conf.get_list("object_expand", None)
+        self.extract_descriptions = conf.get_bool("extract_descriptions", False)
+        self.filter_columns = conf.get_string("filter_columns", None)
+        self._extract_iter = iter(self._get_extract_iter())
+
+    @classmethod
+    def required_config_keys(cls):
+        return [cls.SCHEMA_PATH_KEY, cls.DATABASE_KEY]
 
     def extract(self) -> Any:
         try:
