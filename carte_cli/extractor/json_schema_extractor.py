@@ -36,12 +36,17 @@ class JSONSchemaExtractor(Extractor):
         self.pivot_column = conf.get_string("pivot_column", None)
         self.object_expand = conf.get_list("object_expand", None)
         self.extract_descriptions = conf.get_bool("extract_descriptions", False)
-        self.tags_key = conf.get_string("tags_key", None)
         filter_columns = conf.get_string("filter_columns", None)
         if filter_columns is not None:
             self.filter_columns = re.compile(filter_columns)
         else:
             self.filter_columns = None
+        tags_key = conf.get_string("tags_key", None)
+        if tags_key is not None:
+            self.tags_key = tags_key.split(".")
+        else:
+            self.tags_key = None
+
         self._extract_iter = iter(self._get_extract_iter())
 
     @classmethod
@@ -141,12 +146,16 @@ class JSONSchemaExtractor(Extractor):
             schema.get(self.DESCRIPTION_KEY) if self.extract_descriptions else None
         )
 
-        if self.tags_key:
-            raw_tags = schema.get(self.tags_key, {})
+        if self.tags_key is not None:
+            raw_tags = schema
+
+            for key_segment in self.tags_key:
+                raw_tags = raw_tags.get(key_segment, {})
         else:
             raw_tags = {}
 
         tags = [TableTag(key, value) for key, value in raw_tags.items()]
+        print(raw_tags)
 
         return TableMetadata(
             name=name,
