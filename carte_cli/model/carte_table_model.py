@@ -217,15 +217,12 @@ class TableMetadata:
         self_tags_dict = self.get_tags_by_name()
         existing_tags_dict = existing.get_tags_by_name()
 
-        merged_tags = []
+        merged_tags = existing_tags_dict.copy()
 
         for key, value in self_tags_dict.items():
-            merged_value = (
-                existing_tags_dict[key] if key in existing_tags_dict else value
-            )
-            merged_tags.append(TableTag(key=key, value=merged_value))
+            merged_tags[key] = value
 
-        return merged_tags
+        return [TableTag(key=key, value=value) for key, value in merged_tags.items()]
 
     def merge_with_existing(self, existing):
         if existing.name is not None and existing.name != self.name:
