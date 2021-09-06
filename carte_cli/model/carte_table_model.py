@@ -10,7 +10,7 @@ from databuilder.models.table_metadata import (
 
 
 def get_description_text(description: DatabuilderDescription):
-    if hasattr(description, 'text'):
+    if hasattr(description, "text"):
         return description.text
 
 
@@ -182,6 +182,9 @@ class TableMetadata:
     def get_columns_by_name(self):
         return {col.name: col for col in self.columns}
 
+    def get_tags_by_name(self):
+        return {tag.key: tag.value for tag in self.tags}
+
     def merge_columns(self, existing, preserve_descriptions=True):
         self_columns_dict = self.get_columns_by_name()
         existing_columns_dict = existing.get_columns_by_name()
@@ -210,6 +213,20 @@ class TableMetadata:
             )
         return merged_columns
 
+    def merge_tags(self, existing):
+        self_tags_dict = self.get_tags_by_name()
+        existing_tags_dict = existing.get_tags_by_name()
+
+        merged_tags = []
+
+        for key, value in self_tags_dict.items():
+            merged_value = (
+                existing_tags_dict[key] if key in existing_tags_dict else value
+            )
+            merged_tags.append(TableTag(key=key, value=merged_value))
+
+        return merged_tags
+
     def merge_with_existing(self, existing):
         if existing.name is not None and existing.name != self.name:
             raise ValueError("Table names not equal!")
@@ -228,7 +245,7 @@ class TableMetadata:
             description=description,
             location=self.location,
             columns=self.merge_columns(existing),
-            tags=existing.tags,
+            tags=self.merge_columns(existing),
             table_type=self.table_type,
         )
 
