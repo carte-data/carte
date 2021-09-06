@@ -1,5 +1,10 @@
 from typing import List, Union, Iterator, Any, Iterable, Dict
-from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte_cli.model.carte_table_model import (
+    TableMetadata,
+    ColumnMetadata,
+    TableType,
+    TableTag,
+)
 from carte_cli.utils.file_io import read_json
 from databuilder.extractor.base_extractor import Extractor
 from pyhocon import ConfigTree
@@ -31,6 +36,7 @@ class JSONSchemaExtractor(Extractor):
         self.pivot_column = conf.get_string("pivot_column", None)
         self.object_expand = conf.get_list("object_expand", None)
         self.extract_descriptions = conf.get_bool("extract_descriptions", False)
+        self.tags_key = conf.get_string("tags_key", None)
         filter_columns = conf.get_string("filter_columns", None)
         if filter_columns is not None:
             self.filter_columns = re.compile(filter_columns)
@@ -135,6 +141,13 @@ class JSONSchemaExtractor(Extractor):
             schema.get(self.DESCRIPTION_KEY) if self.extract_descriptions else None
         )
 
+        if self.tags_key:
+            raw_tags = schema.get(self.tags_key, {})
+        else:
+            raw_tags = {}
+
+        tags = [TableTag(key, value) for key, value in raw_tags.items()]
+
         return TableMetadata(
             name=name,
             description=description,
@@ -143,6 +156,7 @@ class JSONSchemaExtractor(Extractor):
             location=self.schema_path,
             columns=mapped_columns,
             table_type=TableType.TABLE,
+            tags=tags,
         )
 
     def _process_column(

@@ -5,7 +5,12 @@ from pyhocon import ConfigFactory
 from pyhocon.config_tree import ConfigTree
 
 from carte_cli.extractor.json_schema_extractor import JSONSchemaExtractor
-from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
+from carte_cli.model.carte_table_model import (
+    TableMetadata,
+    ColumnMetadata,
+    TableTag,
+    TableType,
+)
 
 
 class TestJSONSchemaExtractor(unittest.TestCase):
@@ -82,9 +87,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             }
 
             extractor = JSONSchemaExtractor("test-connection")
-            extractor.init(
-                self.get_conf({"pivot_column": "glasses"})
-            )
+            extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             with self.assertRaises(ValueError):
                 results = extractor.extract()
@@ -111,9 +114,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
             extractor = JSONSchemaExtractor("test-connection")
-            extractor.init(
-                self.get_conf({"pivot_column": "glasses"})
-            )
+            extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             with self.assertRaises(ValueError):
                 results = extractor.extract()
@@ -146,9 +147,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             }
 
             extractor = JSONSchemaExtractor("test-connection")
-            extractor.init(
-                self.get_conf({"pivot_column": "glasses"})
-            )
+            extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
@@ -326,10 +325,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             extractor = JSONSchemaExtractor("test-connection")
             extractor.init(
                 self.get_conf(
-                    {
-                        "object_expand": ["test-props"],
-                        "filter_columns": "^test-props"
-                    }
+                    {"object_expand": ["test-props"], "filter_columns": "^test-props"}
                 )
             )
 
@@ -338,3 +334,55 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             self.assertEqual(results.columns[0].name, "test-props")
             self.assertEqual(results.columns[1].name, "test-props.person-prop-1")
             self.assertEqual(results.columns[2].name, "test-props.person-prop-2")
+
+    def test_adds_tags_from_schema(self) -> None:
+        with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
+            mock_get_schema.return_value = {
+                "type": "object",
+                "title": "test-schema",
+                "properties": {
+                    "name": {"type": "string"},
+                    "age": {"type": "integer"},
+                    "glasses": {"type": "boolean"},
+                },
+                "required": ["name"],
+                "oneOf": [
+                    {
+                        "properties": {
+                            "glasses": {"const": True},
+                            "focal_length": {"type": "float"},
+                        },
+                        "required": ["focal_length"],
+                        "metadata": {
+                            "metadata-key-1": "tag1",
+                            "metadata-key-2": "tag2",
+                        },
+                    },
+                    {
+                        "properties": {
+                            "glasses": {"const": False},
+                        },
+                    },
+                ],
+            }
+
+            extractor = JSONSchemaExtractor("test-connection")
+            extractor.init(self.get_conf({"pivot_column": "glasses", "tags_key": "metadata"}))
+
+            results = extractor.extract()
+            self.assertEqual(results.name, "True")
+            self.assertEqual(len(results.tags), 2)
+            self.assertEqual(
+                results.tags[0].__repr__(),
+                TableTag("metadata-key-1", "tag1").__repr__(),
+            )
+            self.assertEqual(
+                results.tags[1].__repr__(),
+                TableTag("metadata-key-2", "tag2").__repr__(),
+            )
+
+            results = extractor.extract()
+            self.assertEqual(len(results.tags), 0)
+
+            results = extractor.extract()
+            self.assertEqual(results, None)
