@@ -155,7 +155,6 @@ class JSONSchemaExtractor(Extractor):
             raw_tags = {}
 
         tags = [TableTag(key, value) for key, value in raw_tags.items()]
-        print(raw_tags)
 
         return TableMetadata(
             name=name,
