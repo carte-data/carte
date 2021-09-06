@@ -245,7 +245,7 @@ class TableMetadata:
             description=description,
             location=self.location,
             columns=self.merge_columns(existing),
-            tags=self.merge_columns(existing),
+            tags=self.merge_tags(existing),
             table_type=self.table_type,
         )
 
