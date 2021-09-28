@@ -24,14 +24,15 @@ class JSONSchemaExtractor(Extractor):
     def __init__(
         self,
         connection_name: str,
+        database: str,
     ):
         super().__init__()
         self.connection_name = connection_name
+        self.database = database
 
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         self.s3 = boto3.resource("s3")
-        self.database = conf.get_string(self.DATABASE_KEY)
         self.schema_path = conf.get_string(self.SCHEMA_PATH_KEY)
         self.pivot_column = conf.get_string("pivot_column", None)
         self.object_expand = conf.get_list("object_expand", None)
@@ -60,7 +61,7 @@ class JSONSchemaExtractor(Extractor):
             return None
 
     def get_scope(self):
-        return "carte.extractor.json_schema"
+        return f"carte.extractor.json_schema.{self.connection_name}.{self.database}"
 
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
         schema = self._get_schema()
