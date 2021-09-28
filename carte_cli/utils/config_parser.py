@@ -49,6 +49,7 @@ def create_postgres_connection(conn_dict):
 def create_json_schema_connection(conn_dict):
     config = conn_dict.get(CONFIG_KEY, {})
     connection_name = conn_dict.get("name", "json_schema")
+    database = config.get("database")
     missing_params = check_required_config_present(
         JSONSchemaExtractor.required_config_keys(), config
     )
@@ -59,6 +60,7 @@ def create_json_schema_connection(conn_dict):
     return (
         JSONSchemaExtractor(
             connection_name,
+            database,
         ),
         {},
     )
@@ -75,9 +77,8 @@ def parse_config(filename):
     parsed_data = read_yaml(filename)
 
     connections = parsed_data.get("connections", [])
-
     extractors = []
-    config = {}
+    global_config = {}
 
     for conn_dict in connections:
         extractor, extractor_config = CONNECTION_FACTORIES[conn_dict.get("type")](
@@ -89,10 +90,10 @@ def parse_config(filename):
         for conf_key, conf_value in config.items():
             custom_config[f"{scope}.{conf_key}"] = conf_value
 
-        config = {**config, **extractor_config, **custom_config}
+        global_config = {**global_config, **extractor_config, **custom_config}
         extractors.append(extractor)
 
-    return extractors, config
+    return extractors, global_config
 
 
 def _read_file(filename: str):
