@@ -205,7 +205,7 @@ class TableMetadata:
 
             merged_values = (
                 existing_columns_dict[column_name].values
-                if column_name in existing_columns_dict and column.values is not None
+                if column_name in existing_columns_dict and column.values is None
                 else column.values
             )
 
