@@ -194,20 +194,27 @@ class TableMetadata:
         for column_name, column in self_columns_dict.items():
             merged_description = (
                 existing_columns_dict[column_name].description
-                if preserve_descriptions and column_name in existing_columns_dict
+                if column_name in existing_columns_dict
                 else column.description
             )
             merged_example = (
                 existing_columns_dict[column_name].example_value
-                if preserve_descriptions and column_name in existing_columns_dict
+                if column_name in existing_columns_dict
                 else column.example_value
             )
+
+            merged_values = (
+                existing_columns_dict[column_name].values
+                if column_name in existing_columns_dict and column.values is not None
+                else column.values
+            )
+
             merged_columns.append(
                 ColumnMetadata(
                     name=column_name,
                     column_type=column.column_type,
                     description=merged_description,
-                    values=column.values,
+                    values=merged_values,
                     example_value=merged_example,
                 )
             )
