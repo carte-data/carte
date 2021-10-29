@@ -14,10 +14,11 @@ from carte_cli.model.carte_table_model import (
 
 
 class TestJSONSchemaExtractor(unittest.TestCase):
+    TEST_DATABASE = "test-database"
+
     def get_conf(self, additional_config: dict = {}) -> ConfigTree:
         return ConfigFactory.from_dict(
             {
-                JSONSchemaExtractor.DATABASE_KEY: "test-database",
                 JSONSchemaExtractor.SCHEMA_PATH_KEY: "test-schema-path",
                 **additional_config,
             }
@@ -30,18 +31,18 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "title": "test-schema",
                 "properties": {},
             }
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf())
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
-            self.assertEqual(results.database, "test-database")
+            self.assertEqual(results.database, self.TEST_DATABASE)
             self.assertEqual(results.columns, [])
 
     def test_extraction_raises_with_no_type(self) -> None:
         with patch.object(JSONSchemaExtractor, "_get_schema") as mock_get_schema:
             mock_get_schema.return_value = {}
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf())
 
             with self.assertRaises(ValueError):
@@ -55,12 +56,12 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "properties": {"name": {"type": "string"}, "age": {"type": "integer"}},
                 "required": ["name"],
             }
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf())
 
             results = extractor.extract()
             self.assertEqual(results.connection, "test-connection")
-            self.assertEqual(results.database, "test-database")
+            self.assertEqual(results.database, self.TEST_DATABASE)
             self.assertEqual(results.name, "test_schema")
             self.assertEqual(results.columns[0].name, "name")
             self.assertEqual(results.columns[0].column_type, "string (required)")
@@ -86,7 +87,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 "required": ["name"],
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             with self.assertRaises(ValueError):
@@ -113,7 +114,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                     }
                 ],
             }
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             with self.assertRaises(ValueError):
@@ -146,7 +147,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf({"pivot_column": "glasses"}))
 
             results = extractor.extract()
@@ -185,7 +186,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 },
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(self.get_conf({"object_expand": ["test-props"]}))
 
             results = extractor.extract()
@@ -239,7 +240,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(
                 self.get_conf(
                     {
@@ -283,7 +284,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 },
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(
                 self.get_conf(
                     {
@@ -294,7 +295,6 @@ class TestJSONSchemaExtractor(unittest.TestCase):
             )
 
             results = extractor.extract()
-            print(results.columns)
             self.assertEqual(results.columns[0].description, "name-description")
             self.assertIsNone(results.columns[1].description)
             self.assertIsNone(results.columns[2].description)
@@ -322,7 +322,7 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 },
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
             extractor.init(
                 self.get_conf(
                     {"object_expand": ["test-props"], "filter_columns": "^test-props"}
@@ -366,8 +366,10 @@ class TestJSONSchemaExtractor(unittest.TestCase):
                 ],
             }
 
-            extractor = JSONSchemaExtractor("test-connection")
-            extractor.init(self.get_conf({"pivot_column": "glasses", "tags_key": "metadata"}))
+            extractor = JSONSchemaExtractor("test-connection", self.TEST_DATABASE)
+            extractor.init(
+                self.get_conf({"pivot_column": "glasses", "tags_key": "metadata"})
+            )
 
             results = extractor.extract()
             self.assertEqual(results.name, "True")

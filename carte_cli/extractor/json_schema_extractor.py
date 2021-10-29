@@ -37,6 +37,11 @@ class JSONSchemaExtractor(Extractor):
         self.pivot_column = conf.get_string("pivot_column", None)
         self.object_expand = conf.get_list("object_expand", None)
         self.extract_descriptions = conf.get_bool("extract_descriptions", False)
+        pin_column = conf.get_string("pin_column", None)
+        if pin_column is not None:
+            self.pin_column = re.compile(pin_column)
+        else:
+            self.pin_column = None
         filter_columns = conf.get_string("filter_columns", None)
         if filter_columns is not None:
             self.filter_columns = re.compile(filter_columns)
@@ -143,6 +148,9 @@ class JSONSchemaExtractor(Extractor):
             )
         ]
 
+        if self.pin_column:
+            mapped_columns = self._pin_columns(mapped_columns)
+
         description = (
             schema.get(self.DESCRIPTION_KEY) if self.extract_descriptions else None
         )
@@ -167,6 +175,21 @@ class JSONSchemaExtractor(Extractor):
             table_type=TableType.TABLE,
             tags=tags,
         )
+
+    def _pin_columns(
+        self, mapped_columns: List[ColumnMetadata]
+    ) -> List[ColumnMetadata]:
+
+        pinned_columns = [
+            column for column in mapped_columns if self.pin_column.search(column.name)
+        ]
+        regular_columns = [
+            column
+            for column in mapped_columns
+            if not self.pin_column.search(column.name)
+        ]
+
+        return pinned_columns + regular_columns
 
     def _process_column(
         self, column_name: str, column_def: dict, required_columns: List[str]
