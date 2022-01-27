@@ -70,8 +70,8 @@ def test_load_carte_metadata_with_merge(mock_os, mock_frontmatter, patched_confi
         table_type=TableType.TABLE,
         columns=[
             ColumnMetadata("test_col1", "string", None),
-            ColumnMetadata("test_col2", "varchar", None)
-        ]
+            ColumnMetadata("test_col2", "varchar", None),
+        ],
     )
 
     final_record = test_record.merge_with_existing(existing_record)
@@ -81,11 +81,12 @@ def test_load_carte_metadata_with_merge(mock_os, mock_frontmatter, patched_confi
     mock_frontmatter.parse.return_value = existing_record.to_frontmatter()
     existing_frontmatter = existing_record.to_frontmatter()
 
-
     loader = CarteLoader()
     loader.init(patched_config)
     loader.load(test_record)
 
     loader.close()
 
-    mock_frontmatter.dump.assert_called_with("mock_path", *final_record.to_frontmatter())
+    mock_frontmatter.dump.assert_called_with(
+        "mock_path", *final_record.to_frontmatter()
+    )

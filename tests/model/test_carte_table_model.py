@@ -126,7 +126,15 @@ class TestTableMetadata(unittest.TestCase):
         assert result.database == "test-db"
         assert result.location == "test-location"
         assert result.connection == "test-connection"
-        assert result.columns[0].__repr__() == ColumnMetadata("column-a", "test-type", "test-description", example_value="test-example").__repr__()
+        assert (
+            result.columns[0].__repr__()
+            == ColumnMetadata(
+                "column-a",
+                "test-type",
+                "test-description",
+                example_value="test-example",
+            ).__repr__()
+        )
         assert len(result.columns) == 1
         assert result.table_type == TableType.TABLE
         assert result.tags[0].key == "a"

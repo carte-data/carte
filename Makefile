@@ -5,7 +5,7 @@ clean:
 
 .PHONY: test_unit
 test_unit:
-	python3 -bb -m pytest tests
+	poetry run python -bb -m pytest tests
 
 .PHONY: test
 test: test_unit

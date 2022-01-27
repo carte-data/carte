@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import boto3
+import re
 from pyhocon import ConfigTree
 from typing import Iterator, Union, Dict, Any, List
 from databuilder.extractor.base_extractor import Extractor
@@ -15,6 +16,8 @@ class GlueExtractor(Extractor):
     def init(self, conf: ConfigTree) -> None:
         self.conf = conf
         self._glue = boto3.client("glue")
+        tbl_filter = conf.get_string("table_name_filter", None)
+        self._table_name_re = re.compile(tbl_filter) if tbl_filter else None
         self._extract_iter = None
 
     def extract(self) -> Union[TableMetadata, None]:
@@ -31,6 +34,14 @@ class GlueExtractor(Extractor):
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
         for row in self._get_raw_extract_iter():
             columns = []
+            table_name = row["Name"]
+            db_name = row["DatabaseName"]
+            full_table_name = f"{db_name}.{table_name}"
+            if (
+                self._table_name_re is not None
+                and self._table_name_re.search(full_table_name) is not None
+            ):
+                continue
 
             for column in row["StorageDescriptor"]["Columns"] + row.get(
                 "PartitionKeys", []
@@ -50,9 +61,9 @@ class GlueExtractor(Extractor):
             )
 
             yield TableMetadata(
-                name=row["Name"],
+                name=table_name,
                 connection=self.connection_name,
-                database=row["DatabaseName"],
+                database=db_name,
                 description=None,
                 location=row["StorageDescriptor"].get("Location", None),
                 columns=columns,

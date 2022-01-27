@@ -158,10 +158,32 @@ class TestGlueExtractor(unittest.TestCase):
                     },
                     "TableType": "VIRTUAL_VIEW",
                 },
+                {
+                    "Name": "shouldnt",
+                    "DatabaseName": "sandbox",
+                    "Description": "This shouldn't be extracted",
+                    "StorageDescriptor": {
+                        "Columns": [
+                            {
+                                "Name": "col_id3",
+                                "Type": "varchar",
+                                "Comment": "description of col_id3",
+                            },
+                            {
+                                "Name": "col_name3",
+                                "Type": "varchar",
+                                "Comment": "description of col_name3",
+                            },
+                        ]
+                    },
+                    "TableType": "VIRTUAL_VIEW",
+                },
             ]
 
             extractor = GlueExtractor("test-connection")
-            extractor.init(self.conf)
+            extractor.init(
+                ConfigFactory.from_dict({"table_name_filter": "^sandbox\\."})
+            )
 
             expected = TableMetadata(
                 name="test_table1",
