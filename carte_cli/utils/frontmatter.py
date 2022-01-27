@@ -21,10 +21,12 @@ def parse(filename):
 
     return metadata, content
 
+
 def _read_file(filename: str):
     with open(filename, "r") as f:
         data = f.read().split(FRONTMATTER_SEPARATOR)
     return data
+
 
 def dump(filename, metadata, content):
     buf = io.StringIO()

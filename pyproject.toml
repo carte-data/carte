@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "carte-cli"
-version = "0.3.18"
+version = "0.3.19"
 description = "A static site generator for data catalogs"
 authors = ["Balint Haller <balint@hey.com>"]
 license = "GPL-3.0-or-later"

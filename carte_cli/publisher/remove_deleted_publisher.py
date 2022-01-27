@@ -21,9 +21,7 @@ class RemoveDeletedPublisher(Publisher):
         if not self.tables_path.endswith("/"):
             prefix_length += 1
 
-        file_ids = [
-            path[prefix_length : -(len(".md"))] for path in file_paths
-        ]
+        file_ids = [path[prefix_length : -(len(".md"))] for path in file_paths]
 
         for file_path, file_id in zip(file_paths, file_ids):
             if file_id not in datasets:

@@ -31,7 +31,7 @@ def flatten(input_dir: str, output_dir: str, template_path: str) -> None:
 
     file_paths = glob.glob(input_dir + "/*/*/*.md", recursive=True)
     output_paths = [
-        os.path.join(output_dir, file_path[(len(input_dir)+1) :])
+        os.path.join(output_dir, file_path[(len(input_dir) + 1) :])
         for file_path in file_paths
     ]
 
