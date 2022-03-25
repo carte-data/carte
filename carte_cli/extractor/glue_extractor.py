@@ -32,13 +32,13 @@ class GlueExtractor(Extractor):
         return "carte.extractor.glue"
 
     def _get_column_type(self, column: Dict) -> str:
-        col_type=column['type']
+        col_type = column["type"]
         if type(col_type) == dict:
-            col_sub_type=col_type['type']
-            if col_sub_type =='map':            
+            col_sub_type = col_type["type"]
+            if col_sub_type == "map":
                 return f"map<{col_type['keyType']},{col_type['valueType']}>"
             return col_sub_type
-        else: 
+        else:
             return col_type
 
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
@@ -53,20 +53,30 @@ class GlueExtractor(Extractor):
             ):
                 continue
 
-            for column in row["Parameters"]["spark.sql.sources.schema"]:
-                columns.append(
-                    ColumnMetadata(
-                        name=column["name"],
-                        column_type=self._get_column_type(column),
-                        description=None,
-                    )
-                )
+            is_view = row.get("TableType") == "VIRTUAL_VIEW"
 
-            table_type = (
-                TableType.VIEW
-                if (row.get("TableType") == "VIRTUAL_VIEW")
-                else TableType.TABLE
-            )
+            if is_view:
+                for column in row["StorageDescriptor"]["Columns"]:
+                    columns.append(
+                        ColumnMetadata(
+                            name=column["Name"],
+                            column_type=column["Type"],
+                            description=None,
+                        )
+                    )
+            else:
+                # This solution is more robust for Delta and Parquet tables.
+                # Both table types has these fields
+                for column in row["Parameters"]["spark.sql.sources.schema"]["fields"]:
+                    columns.append(
+                        ColumnMetadata(
+                            name=column["name"],
+                            column_type=self._get_column_type(column),
+                            description=None,
+                        )
+                    )
+
+            table_type = TableType.VIEW if is_view else TableType.TABLE
 
             yield TableMetadata(
                 name=table_name,
