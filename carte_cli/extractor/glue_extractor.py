@@ -9,6 +9,11 @@ from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, Tab
 import json
 
 
+class GlueExtractorException(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+
 class GlueExtractor(Extractor):
     def __init__(self, connection_name: str):
         super().__init__()
@@ -54,12 +59,17 @@ class GlueExtractor(Extractor):
             schema_parts_count = int(
                 row["Parameters"]["spark.sql.sources.schema.numParts"]
             )
-schema_str = ''.join([row["Parameters"][f"spark.sql.sources.schema.part.{part}"] for part in range(schema_parts_count)])
+            schema_str = "".join(
+                [
+                    row["Parameters"][f"spark.sql.sources.schema.part.{part}"]
+                    for part in range(schema_parts_count)
+                ]
+            )
             schema = json.loads(schema_str)
         else:
-            print(table_name)
-            print(row)
-            raise Exception("Unsupported glue table format")
+            raise GlueExtractorException(
+                f"Unsupported glue table format for {table_name}", row
+            )
         fields = schema["fields"]
         for column in fields:
             columns.append(
