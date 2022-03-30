@@ -247,6 +247,48 @@ class TestGlueExtractor(unittest.TestCase):
                     },
                 },
                 {
+                    "Name": "big_schema_test_table",
+                    "DatabaseName": "test_schema1",
+                    "Description": "test table for big schema",
+                    "TableType": "EXTERNAL_TABLE",
+                    "StorageDescriptor": {
+                        "Location": "test_location3",
+                    },
+                    "Parameters": {
+                        "spark.sql.sources.schema.numParts": "2",
+                        "spark.sql.sources.schema.part.0": """{
+                            "type": "struct",
+                            "fields": [
+                                {
+                                    "name": "col_name",
+                                    "type": "varchar",
+                                    "nullable": "Tr""",
+                        "spark.sql.sources.schema.part.1": """ue",
+                                    "metadata": {}
+                                },
+                                {
+                                    "name": "col_name2",
+                                    "type": "varchar",
+                                    "nullable": "True",
+                                    "metadata": {}
+                                },
+                                {
+                                    "name": "event_properties",
+                                    "type": {
+                                        "type": "map",
+                                        "keyType": "string",
+                                        "valueType": "string",
+                                        "valueContainsNull": "True"
+                                    },
+                                    "nullable": "True",
+                                    "metadata": {}
+                                }
+                            ]
+                        }
+                        """,
+                    },
+                },
+                {
                     "Name": "test_view1",
                     "DatabaseName": "test_schema1",
                     "Description": "test view 1",
@@ -316,6 +358,21 @@ class TestGlueExtractor(unittest.TestCase):
                 database="test_schema1",
                 description=None,
                 location="test_location2",
+                table_type=TableType.TABLE,
+                columns=[
+                    ColumnMetadata("col_name", "varchar", None),
+                    ColumnMetadata("col_name2", "varchar", None),
+                    ColumnMetadata("event_properties", "map<string,string>", None),
+                ],
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+
+            expected = TableMetadata(
+                name="big_schema_test_table",
+                connection="test-connection",
+                database="test_schema1",
+                description=None,
+                location="test_location3",
                 table_type=TableType.TABLE,
                 columns=[
                     ColumnMetadata("col_name", "varchar", None),
