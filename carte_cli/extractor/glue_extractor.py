@@ -54,12 +54,7 @@ class GlueExtractor(Extractor):
             schema_parts_count = int(
                 row["Parameters"]["spark.sql.sources.schema.numParts"]
             )
-            schema_str = ""
-            for part in range(0, schema_parts_count):
-                schema_str = (
-                    schema_str
-                    + row["Parameters"][f"spark.sql.sources.schema.part.{part}"]
-                )
+schema_str = ''.join([row["Parameters"][f"spark.sql.sources.schema.part.{part}"] for part in range(schema_parts_count)])
             schema = json.loads(schema_str)
         else:
             print(table_name)
