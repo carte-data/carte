@@ -62,46 +62,46 @@ class TestGlueExtractor(unittest.TestCase):
                     ],
                     "TableType": "EXTERNAL_TABLE",
                     "Parameters": {
-                        "spark.sql.sources.schema": {
+                        "spark.sql.sources.schema": """{
                             "type": "struct",
                             "fields": [
                                 {
                                     "name": "col_id1",
                                     "type": "bigint",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "col_id2",
                                     "type": "bigint",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "source",
                                     "type": "varchar",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "is_active",
                                     "type": "boolean",
-                                    "nullable": True,
+                                    "nullable": "True"
                                 },
                                 {
                                     "name": "etl_created_at",
                                     "type": "timestamp",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "partition_key1",
                                     "type": "string",
-                                    "nullable": True,
-                                    "metadata": {},
-                                },
-                            ],
-                        }
+                                    "nullable": "True",
+                                    "metadata": {}
+                                }
+                            ]
+                        }"""
                     },
                 }
             ]
@@ -159,35 +159,35 @@ class TestGlueExtractor(unittest.TestCase):
                     ],
                     "TableType": "EXTERNAL_TABLE",
                     "Parameters": {
-                        "spark.sql.sources.schema": {
+                        "spark.sql.sources.schema": """{
                             "type": "struct",
                             "fields": [
                                 {
                                     "name": "col_id1",
                                     "type": "bigint",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "source",
                                     "type": "varchar",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "ds",
                                     "type": "varchar",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "partition_key1",
                                     "type": "string",
-                                    "nullable": True,
-                                    "metadata": {},
-                                },
-                            ],
-                        }
+                                    "nullable": "True",
+                                    "metadata": {}
+                                }
+                            ]
+                        }"""
                     },
                 },
                 {
@@ -216,20 +216,20 @@ class TestGlueExtractor(unittest.TestCase):
                     },
                     "TableType": "EXTERNAL_TABLE",
                     "Parameters": {
-                        "spark.sql.sources.schema": {
+                        "spark.sql.sources.schema": """{
                             "type": "struct",
                             "fields": [
                                 {
                                     "name": "col_name",
                                     "type": "varchar",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "col_name2",
                                     "type": "varchar",
-                                    "nullable": True,
-                                    "metadata": {},
+                                    "nullable": "True",
+                                    "metadata": {}
                                 },
                                 {
                                     "name": "event_properties",
@@ -237,13 +237,13 @@ class TestGlueExtractor(unittest.TestCase):
                                         "type": "map",
                                         "keyType": "string",
                                         "valueType": "string",
-                                        "valueContainsNull": True,
+                                        "valueContainsNull": "True"
                                     },
-                                    "nullable": True,
-                                    "metadata": {},
-                                },
-                            ],
-                        }
+                                    "nullable": "True",
+                                    "metadata": {}
+                                }
+                            ]
+                        }"""
                     },
                 },
                 {

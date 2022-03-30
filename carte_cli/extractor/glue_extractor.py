@@ -6,7 +6,7 @@ from pyhocon import ConfigTree
 from typing import Iterator, Union, Dict, Any, List
 from databuilder.extractor.base_extractor import Extractor
 from carte_cli.model.carte_table_model import TableMetadata, ColumnMetadata, TableType
-
+import json
 
 class GlueExtractor(Extractor):
     def __init__(self, connection_name: str):
@@ -41,6 +41,34 @@ class GlueExtractor(Extractor):
         else:
             return col_type
 
+    def _get_glue_table_columns(self, row: Dict[str, Any], table_name: str) -> List[ColumnMetadata]:
+        columns = []
+        if "spark.sql.sources.schema" in row["Parameters"]:
+            # For delta and parquet tables if the schema is not too big   
+            schema = json.loads(row["Parameters"]["spark.sql.sources.schema"])                    
+        elif 'spark.sql.sources.schema.numParts' in row["Parameters"]:
+            # If the delta or parquet table's schema is very big, glue separates it to multiple properties ¯\_(ツ)_/¯
+            schema_parts_count = int(row["Parameters"]["spark.sql.sources.schema.numParts"])
+            schema_str = ""
+            for part in range(0,schema_parts_count):
+                schema_str = schema_str+row["Parameters"][f"spark.sql.sources.schema.part.{part}"]                       
+            schema = json.loads(schema_str)
+        else:
+            print(table_name)
+            print(row)
+            raise Exception("Unsupported glue table format")
+        fields = schema["fields"]
+        for column in fields:
+            columns.append(
+                ColumnMetadata(
+                    name=column["name"],
+                    column_type=self._get_column_type(column),
+                    description=None,
+                )
+            )
+        return columns
+    
+        
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
         for row in self._get_raw_extract_iter():
             columns = []
@@ -56,6 +84,7 @@ class GlueExtractor(Extractor):
             is_view = row.get("TableType") == "VIRTUAL_VIEW"
 
             if is_view:
+                table_type = TableType.VIEW
                 for column in row["StorageDescriptor"]["Columns"]:
                     columns.append(
                         ColumnMetadata(
@@ -64,19 +93,9 @@ class GlueExtractor(Extractor):
                             description=None,
                         )
                     )
-            else:
-                # This solution is more robust for Delta and Parquet tables.
-                # Both table types has these fields
-                for column in row["Parameters"]["spark.sql.sources.schema"]["fields"]:
-                    columns.append(
-                        ColumnMetadata(
-                            name=column["name"],
-                            column_type=self._get_column_type(column),
-                            description=None,
-                        )
-                    )
-
-            table_type = TableType.VIEW if is_view else TableType.TABLE
+            else:                             
+                columns = self._get_glue_table_columns(row, full_table_name)
+                table_type = TableType.TABLE
 
             yield TableMetadata(
                 name=table_name,
