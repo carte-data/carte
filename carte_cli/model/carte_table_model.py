@@ -25,6 +25,7 @@ class ColumnType(Enum):
 
 class TableType(Enum):
     TABLE = "table"
+    CONNECTION_BASED_TABLE = "connection_based_table"
     VIEW = "view"
 
 

@@ -47,7 +47,7 @@ class GlueExtractor(Extractor):
         else:
             return col_type
 
-    def _get_glue_table_columns(
+    def _get_schema_columns(
         self, row: Dict[str, Any], table_name: str
     ) -> List[ColumnMetadata]:
         columns = []
@@ -81,11 +81,26 @@ class GlueExtractor(Extractor):
             )
         return columns
 
+    def _get_descriptor_columns(self, row: Dict) -> List[ColumnMetadata]:
+        columns = []
+        for column in row["StorageDescriptor"]["Columns"]:
+            columns.append(
+                ColumnMetadata(
+                    name=column["Name"],
+                    column_type=column["Type"],
+                    description=None,
+                )
+            )
+        return columns
+
     def _get_extract_iter(self) -> Iterator[TableMetadata]:
         for row in self._get_raw_extract_iter():
             columns = []
             table_name = row["Name"]
             db_name = row["DatabaseName"]
+            table_type_raw_value = row.get("TableType")
+            connection_name = row.get("Parameters", {}).get("connectionName", None)
+
             full_table_name = f"{db_name}.{table_name}"
             if (
                 self._table_name_re is not None
@@ -93,21 +108,17 @@ class GlueExtractor(Extractor):
             ):
                 continue
 
-            is_view = row.get("TableType") == "VIRTUAL_VIEW"
-
-            if is_view:
+            if table_type_raw_value == "VIRTUAL_VIEW":
                 table_type = TableType.VIEW
-                for column in row["StorageDescriptor"]["Columns"]:
-                    columns.append(
-                        ColumnMetadata(
-                            name=column["Name"],
-                            column_type=column["Type"],
-                            description=None,
-                        )
-                    )
-            else:
-                columns = self._get_glue_table_columns(row, full_table_name)
+                columns = self._get_descriptor_columns(row)
+            elif (
+                table_type_raw_value == "EXTERNAL_TABLE" and connection_name is not None
+            ):
                 table_type = TableType.TABLE
+                columns = self._get_descriptor_columns(row)
+            else:
+                table_type = TableType.TABLE
+                columns = self._get_schema_columns(row, full_table_name)
 
             yield TableMetadata(
                 name=table_name,

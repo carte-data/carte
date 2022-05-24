@@ -1,4 +1,3 @@
-import boto3
 import unittest
 from unittest.mock import patch
 from pyhocon import ConfigFactory
@@ -309,6 +308,29 @@ class TestGlueExtractor(unittest.TestCase):
                     "TableType": "VIRTUAL_VIEW",
                 },
                 {
+                    "Name": "ConnectionTable",
+                    "DatabaseName": "test_schema1",
+                    "Description": "test connection 1",
+                    "Parameters": {
+                        "connectionName": "test_connection_1",
+                    },
+                    "StorageDescriptor": {
+                        "Columns": [
+                            {
+                                "Name": "col_id3",
+                                "Type": "varchar",
+                                "Comment": "description of col_id3",
+                            },
+                            {
+                                "Name": "col_name3",
+                                "Type": "varchar",
+                                "Comment": "description of col_name3",
+                            },
+                        ]
+                    },
+                    "TableType": "EXTERNAL_TABLE",
+                },
+                {
                     "Name": "shouldnt",
                     "DatabaseName": "sandbox",
                     "Description": "This shouldn't be extracted",
@@ -390,6 +412,20 @@ class TestGlueExtractor(unittest.TestCase):
                 description=None,
                 location=None,
                 table_type=TableType.VIEW,
+                columns=[
+                    ColumnMetadata("col_id3", "varchar", None),
+                    ColumnMetadata("col_name3", "varchar", None),
+                ],
+            )
+            self.assertEqual(expected.__repr__(), extractor.extract().__repr__())
+
+            expected = TableMetadata(
+                name="ConnectionTable",
+                connection="test-connection",
+                database="test_schema1",
+                description=None,
+                location=None,
+                table_type=TableType.TABLE,
                 columns=[
                     ColumnMetadata("col_id3", "varchar", None),
                     ColumnMetadata("col_name3", "varchar", None),
