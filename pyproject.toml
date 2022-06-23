@@ -13,11 +13,11 @@ documentation = "https://docs.cartedata.com"
 carte = "carte_cli.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-amundsen-databuilder = "4.2.2"
+python = "^3.9"
+amundsen-databuilder = "~4.2.2"
 "ruamel.yaml" = "~0.16.12"
-boto3 = "~1.17.2"
-typer = "~0.3.2"
+boto3 = "~1.24.15"
+typer = "~0.4.1"
 click-spinner = "~0.1.10"
 psycopg2 = { version = "~2.8.6", optional = true }
 SQLAlchemy = { version = "~1.4.18", optional = true }
