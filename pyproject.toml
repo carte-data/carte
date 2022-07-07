@@ -13,7 +13,7 @@ documentation = "https://docs.cartedata.com"
 carte = "carte_cli.main:app"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 amundsen-databuilder = "^6.0.0"
 "ruamel.yaml" = "~0.16.12"
 boto3 = "~1.24.24"
