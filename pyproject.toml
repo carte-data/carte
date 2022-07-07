@@ -14,14 +14,15 @@ carte = "carte_cli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-amundsen-databuilder = "~4.2.2"
+amundsen-databuilder = "^6.0.0"
 "ruamel.yaml" = "~0.16.12"
-boto3 = "~1.24.15"
+boto3 = "~1.24.24"
 typer = "~0.4.1"
 click-spinner = "~0.1.10"
 psycopg2 = { version = "~2.8.6", optional = true }
-SQLAlchemy = { version = "~1.4.18", optional = true }
+SQLAlchemy = { version = "^1.3.6", optional = true }
 Jinja2 = "~2.11.3"
+pandas = "^1.4.3"
 
 [tool.poetry.extras]
 postgres = ["psycopg2", "SQLAlchemy"]
