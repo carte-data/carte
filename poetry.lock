@@ -862,7 +862,7 @@ postgres = ["psycopg2", "SQLAlchemy"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "60aedf525b1e49e55b4996dcb151faee45d77da28bde807e5db23b8161c1178f"
+content-hash = "fef26a71245dad5cdeb33ec8ce0e0ebb59ba40e6f7919145d97c2f5be3da90b4"
 
 [metadata.files]
 alembic = [
