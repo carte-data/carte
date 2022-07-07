@@ -2,7 +2,7 @@ name: Build and Deploy
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 jobs:
   build-and-publish-python-module:
     name: Build and publish python module to pypi
@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Setup python 3.6
+      - name: Setup python 3.9
         uses: actions/setup-python@v1
         with:
-          python-version: 3.6
+          python-version: 3.9
       - name: Build and publish to pypi
         uses: JRubics/poetry-publish@v1.8
         with:
